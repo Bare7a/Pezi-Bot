@@ -105,8 +105,17 @@ Welcome to **Pezi Bot**, the ultimate chatbot for your Twitch channel! **Pezi Bo
 - Customisable permission for using
 - Customisable response messages
 
+## Points
+
+- Message regarding the current user points
+- Message regarding the top 10 user with most points
+- Admin Add/Set/Remove points from user
+- Customisable permission for using
+- Customisable response messages
+
 ## Stats
 
+- Details regarding how much points is the user ahead or behind
 - Customisable permission for using
 - Customisable response messages
 
