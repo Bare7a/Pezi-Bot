@@ -73,8 +73,7 @@ Welcome to **Pezi Bot**, the ultimate chatbot for your Twitch channel! **Pezi Bo
 ## Stream Status
 
 - Automatically updates the stream's online status
-- Configurable polling time
--
+- Customisable polling time
 
 ## View Rewards
 
