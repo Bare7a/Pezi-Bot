@@ -4,6 +4,38 @@ Welcome to **Pezi Bot**, the ultimate chatbot for your Twitch channel! **Pezi Bo
 
 **Pezi Bot**'s minigames offer a chance for your viewers to win even more points and compete against each other for the top spot on the leaderboard. Whether you're a seasoned streamer or just starting out, **Pezi Bot** is the perfect addition to your channel to keep your audience engaged and entertained. So why wait? Let **Pezi Bot** join your chat today and see the fun and excitement it can bring to your Twitch community!
 
+# Installation
+
+1. Install Node version 18.16.0 or higher
+2. Run `npm install` inside the terminal
+3. Create a file .env into the root directory of the project consisting:
+
+```bash
+bot_streamer="bare7a"
+bot_username="pezi_bot"
+bot_password="oauth:abcdefghi12jkllmnop34qr5stuvwx"
+bot_client_id="ab123cdefghijklmn4o567pq8st9u"
+bot_access_token="1abcdefghijklmnopqr23stuvw4xy4"
+bot_refresh_token="a1bcdef23ghijk4lmnop5qr6st7uvwxyzabc8defghijk8lmno"
+bot_currency_name="points"
+bot_default_points="100"
+```
+
+- **bot_streamer** - Username of the streamer of which the bot will be running in
+- **bot_username** - Bot's username
+- **bot_password** - Oath token for the bot for connecting to the Twitch chat
+- **bot_client_id** - Id of the bot
+- **bot_access_token** - Access token for calling the API's
+- **bot_refresh_token** - Refresh token for updating the access token
+- **bot_currency_name** - Name of the currency that the bot will use
+- **bot_default_points** - Initial points that the new users will start with
+
+You can use: https://twitchtokengenerator.com/ for **bot_client_id**, **bot_access_token** and **bot_refresh_token**
+You can use: https://twitchapps.com/tmi/ for generating **bot_password**
+
+4. Run `npm run build` to compile
+5. Run `npm run start` to start the application
+
 # Mini Games
 
 ## Coin
