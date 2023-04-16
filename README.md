@@ -30,7 +30,7 @@ bot_default_points="100"
 - **bot_currency_name** - Name of the currency that the bot will use
 - **bot_default_points** - Initial points that the new users will start with
 
-You can use: https://twitchtokengenerator.com/ for **bot_client_id**, **bot_access_token** and **bot_refresh_token**
+You can use: https://twitchtokengenerator.com/ for **bot_client_id**, **bot_access_token** and **bot_refresh_token**\
 You can use: https://twitchapps.com/tmi/ for generating **bot_password**
 
 4. Run `npm run build` to compile
