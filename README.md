@@ -155,5 +155,5 @@ You can use: https://twitchapps.com/tmi/ for **bot_password**
 
 ## Configurator
 
-- Exports all of the user, commands and crons content from the database to a JSON file
-- Imports all of the user, commands and crons content to the database from a JSON file
+- Exports all of the users, commands and crons content from the database to a JSON file
+- Imports all of the users, commands and crons content to the database from a JSON file
