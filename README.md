@@ -7,7 +7,7 @@ Welcome to **Pezi Bot**, the ultimate chatbot for your Twitch channel! **Pezi Bo
 # Installation
 
 1. Install Node version 18.16.0 or higher
-2. Run `npm install` inside the terminal
+2. Run `npm install` to download all of the needed packages
 3. Create an `.env` file into the root directory of the project consisting:
 
 ```bash
