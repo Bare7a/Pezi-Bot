@@ -1,24 +1,16 @@
-import { Optional } from 'sequelize/types';
-import { Table, Model, DataType, Column } from 'sequelize-typescript';
+import { CreationOptional, InferAttributes, InferCreationAttributes, Model } from '@sequelize/core';
 import { LogType } from '../types';
 
-type CronCreationAttributes = Optional<LogType, 'id'>;
-
-@Table
-export class Log extends Model<LogType, CronCreationAttributes> implements LogType {
-  @Column(DataType.TEXT)
+type LogAttributes = Log;
+export class Log
+  extends Model<InferAttributes<LogAttributes>, InferCreationAttributes<LogAttributes>>
+  implements LogType
+{
+  declare id: CreationOptional<number>;
   declare userId: string;
-
-  @Column(DataType.TEXT)
   declare type: string;
-
-  @Column(DataType.NUMBER)
   declare cost: number;
-
-  @Column(DataType.NUMBER)
   declare points: number;
-
-  @Column(DataType.NUMBER)
   declare allPoints: number;
 
   static async reset() {

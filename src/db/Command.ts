@@ -1,5 +1,10 @@
-import { Optional, WhereAttributeHashValue } from 'sequelize/types';
-import { Table, Model, DataType, Column } from 'sequelize-typescript';
+import {
+  Model,
+  WhereAttributeHashValue,
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
+} from '@sequelize/core';
 import { ICommand, CommandType, IMessageCommand, UserRoleType, StatusCronType } from '../types';
 import { Cron, User } from '.';
 import {
@@ -17,53 +22,25 @@ import { TwitchClient } from '../utils';
 import { TriviaCommand } from '../commands/Trivia';
 import { RaffleCommand } from '../commands/Raffle';
 
-type CommandCreationAttributes = Optional<CommandType<ICommand>, 'id'>;
-
-@Table
+type CommandAttributes = Command<ICommand>;
 export class Command<T extends ICommand>
-  extends Model<CommandType<T>, CommandCreationAttributes>
+  extends Model<InferAttributes<CommandAttributes>, InferCreationAttributes<CommandAttributes>>
   implements CommandType<T>
 {
-  @Column(DataType.TEXT)
+  declare id: CreationOptional<number>;
   declare type: T['type'];
-
-  @Column(DataType.TEXT)
   declare name: string;
-
-  @Column(DataType.NUMBER)
   declare cost: number;
-
-  @Column(DataType.BOOLEAN)
   declare customCost: boolean;
-
-  @Column(DataType.NUMBER)
   declare userCd: number;
-
-  @Column(DataType.NUMBER)
   declare globalCd: number;
-
-  @Column(DataType.TEXT)
   declare cdMessage: string;
-
-  @Column(DataType.BOOLEAN)
   declare showCdMessage: boolean;
-
-  @Column(DataType.BOOLEAN)
   declare isEnabled: boolean;
-
-  @Column(DataType.BOOLEAN)
   declare onlyOnline: boolean;
-
-  @Column(DataType.DATE)
   declare lastCalledAt: Date;
-
-  @Column(DataType.JSON)
   declare permission: UserRoleType[];
-
-  @Column(DataType.BOOLEAN)
   declare isLogEnabled: boolean;
-
-  @Column(DataType.JSON)
   declare opts: T['opts'];
 
   static async fetch<T extends ICommand>(type: WhereAttributeHashValue<T['type']>): Promise<Command<T>> {

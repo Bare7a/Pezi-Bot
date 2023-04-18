@@ -1,33 +1,26 @@
-import { Optional, WhereAttributeHashValue } from 'sequelize/types';
-import { Table, Model, DataType, Column } from 'sequelize-typescript';
+import {
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+  WhereAttributeHashValue,
+} from '@sequelize/core';
 import { CronType, ICron } from '../types';
 
-type CronCreationAttributes = Optional<CronType<ICron>, 'id'>;
+type CronAttributes = Cron<ICron>;
 
-@Table
-export class Cron<T extends ICron> extends Model<CronType<T>, CronCreationAttributes> implements Cron<T> {
-  @Column(DataType.TEXT)
+export class Cron<T extends ICron>
+  extends Model<InferAttributes<CronAttributes>, InferCreationAttributes<CronAttributes>>
+  implements Cron<T>
+{
+  declare id: CreationOptional<number>;
   declare type: T['type'];
-
-  @Column(DataType.NUMBER)
   declare interval: number;
-
-  @Column(DataType.BOOLEAN)
   declare isEnabled: boolean;
-
-  @Column(DataType.BOOLEAN)
   declare isExecuting: boolean;
-
-  @Column(DataType.BOOLEAN)
   declare isLogEnabled: boolean;
-
-  @Column(DataType.DATE)
   declare lastCalledAt: Date;
-
-  @Column(DataType.DATE)
   declare callAt: Date;
-
-  @Column(DataType.JSON)
   declare opts: T['opts'];
 
   isExecutePermited(): Boolean {

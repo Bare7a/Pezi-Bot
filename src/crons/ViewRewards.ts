@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import { Op } from '@sequelize/core';
 
 import { Cron, User, Log } from '../db';
 import { LogType, RewardCronType, StatusCronType } from '../types';

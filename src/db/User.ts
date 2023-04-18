@@ -1,43 +1,25 @@
-import { Optional } from 'sequelize/types';
-import { Table, Model, Column, DataType } from 'sequelize-typescript';
 import { UserType, UserRoleType, ValidUserState, ICommand, StatusCronType, RewardCronType } from '../types';
 import { Cron } from './Cron';
 import { Command, Log } from '.';
 import { CONFIG } from '../utils';
 import { ChatUserstate } from 'tmi.js';
+import { Model, CreationOptional, InferAttributes, InferCreationAttributes } from '@sequelize/core';
 
-type UserCreationAttributes = Optional<UserType, 'id'>;
-
-@Table
-export class User extends Model<UserType, UserCreationAttributes> implements UserType {
-  @Column(DataType.TEXT)
+type UserAttributes = User;
+export class User
+  extends Model<InferAttributes<UserAttributes>, InferCreationAttributes<UserAttributes>>
+  implements UserType
+{
+  declare id: CreationOptional<number>;
   declare userId: string;
-
-  @Column(DataType.TEXT)
   declare username: string;
-
-  @Column(DataType.NUMBER)
   declare points: number;
-
-  @Column(DataType.TEXT)
   declare color?: string;
-
-  @Column(DataType.BOOLEAN)
   declare isSub: boolean;
-
-  @Column(DataType.BOOLEAN)
   declare isVIP: boolean;
-
-  @Column(DataType.BOOLEAN)
   declare isMod: boolean;
-
-  @Column(DataType.BOOLEAN)
   declare isAdmin: boolean;
-
-  @Column(DataType.BOOLEAN)
   declare isStreamer: boolean;
-
-  @Column(DataType.JSON)
   declare commands: { [key: string]: string };
 
   static isValidUserState = (account: ChatUserstate): account is ValidUserState => 'display-name' in account;
