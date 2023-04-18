@@ -29,7 +29,7 @@ export const RaffleCommand: CommandActionType<IRaffleCommand> = {
         notOpened: "Raffle: Bet placing isn't opened yet!",
         userBetted: 'Raffle: $user placed a bet of $bet $currency!',
         invalidAmount: 'Raffle: $user you can bet between $min - $max $currency. Currently you have $points $currency.',
-        alreadyBetted: 'Raffle: $user you already placed your bet of $bet $currency!',
+        alreadyBetted: 'Raffle: $user you already placed your bet of $prevBet $currency!',
       },
       showMessages: {
         noBets: true,
