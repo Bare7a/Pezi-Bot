@@ -17,10 +17,10 @@ import {
   NoteCommand,
   MessageCommand,
   StatsCommand,
+  RaffleCommand,
+  TriviaCommand,
 } from '../commands';
 import { TwitchClient } from '../utils';
-import { TriviaCommand } from '../commands/Trivia';
-import { RaffleCommand } from '../commands/Raffle';
 
 type CommandAttributes = Command<ICommand>;
 export class Command<T extends ICommand>

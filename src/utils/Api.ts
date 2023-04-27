@@ -37,7 +37,7 @@ export class Api {
       const url = `https://api.twitch.tv/helix/streams`;
       const headers = Api.headers;
 
-      const res: ApiTwitchStatus = await axios.get(url, { headers, params: { user_login: 'cactusaaaaa' } });
+      const res: ApiTwitchStatus = await axios.get(url, { headers, params: { user_login: CONFIG.streamer } });
       const data = res.data.data[0];
 
       const isOnline = !!(data?.type === 'live');
