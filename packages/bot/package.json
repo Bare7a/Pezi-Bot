@@ -16,8 +16,8 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "npm run build && npm run start",
-    "build": "npx tsc",
-    "start": "node ./dist/bot/index.js",
+    "build": "npx tsc --build --force",
+    "start": "node ./dist/bot/app.js",
     "export": "node ./dist/bot/configurator/Exporter.js",
     "import": "node ./dist/bot/configurator/Importer.js"
   },
