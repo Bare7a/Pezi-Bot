@@ -19,8 +19,7 @@
     "start": "node ./dist/db/index.js"
   },
   "dependencies": {
-    "@sequelize/core": "^7.0.0-alpha.23",
-    "sqlite3": "^5.1.6"
+    "@sequelize/core": "^7.0.0-alpha.23"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
