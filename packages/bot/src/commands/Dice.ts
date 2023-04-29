@@ -1,4 +1,4 @@
-import { IDiceCommand } from '@pezi-bot/db';
+import { IDiceCommand, isDiceCommand } from '@pezi-bot/db';
 
 import { CONFIG } from '../utils';
 import { Command } from '../models';
@@ -30,7 +30,7 @@ export const DiceCommand: CommandActionType<IDiceCommand> = {
       },
     },
   },
-  isValid: (command): command is Command<IDiceCommand> => command.type === DiceCommand.defaultConfig.type,
+  isValid: (command): command is Command<IDiceCommand> => isDiceCommand(command),
   execute: async (user, params, command, bot) => {
     const cost = command.getCost(params[0], user);
     const currencyName = CONFIG.currencyName;

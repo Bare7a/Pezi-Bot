@@ -1,4 +1,4 @@
-import { IPointsCommand } from '@pezi-bot/db';
+import { IPointsCommand, isPointsCommand } from '@pezi-bot/db';
 
 import { CONFIG } from '../utils';
 import { Command, User, Log } from '../models';
@@ -29,7 +29,7 @@ export const PointsCommand: CommandActionType<IPointsCommand> = {
       ],
     },
   },
-  isValid: (command): command is Command<IPointsCommand> => command.type === PointsCommand.defaultConfig.type,
+  isValid: (command): command is Command<IPointsCommand> => isPointsCommand(command),
   execute: async (user, params, command, bot) => {
     const [modifier, username, valueStr] = params;
     const value = Math.abs(Math.floor(Number(valueStr)));

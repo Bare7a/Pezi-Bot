@@ -1,4 +1,4 @@
-import { IMessageCommand } from '@pezi-bot/db';
+import { IMessageCommand, isMessageCommand } from '@pezi-bot/db';
 
 import { Command } from '../models';
 import { CommandActionType } from '../types';
@@ -22,7 +22,7 @@ export const MessageCommand: CommandActionType<IMessageCommand> = {
       message: '$user slapped $target1',
     },
   },
-  isValid: (command): command is Command<IMessageCommand> => command.type === MessageCommand.defaultConfig.type,
+  isValid: (command): command is Command<IMessageCommand> => isMessageCommand(command),
   execute: async (user, params, command, bot): Promise<boolean> => {
     let message = command.opts.message;
     for (const [i, target] of params.entries()) {

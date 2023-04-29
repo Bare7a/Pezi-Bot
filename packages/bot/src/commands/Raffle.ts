@@ -1,4 +1,4 @@
-import { IRaffleCommand, RaffleCronType } from '@pezi-bot/db';
+import { IRaffleCommand, RaffleCronType, isRaffleCommand } from '@pezi-bot/db';
 
 import { CONFIG } from '../utils';
 import { Command, Cron } from '../models';
@@ -42,7 +42,7 @@ export const RaffleCommand: CommandActionType<IRaffleCommand> = {
       },
     },
   },
-  isValid: (command): command is Command<IRaffleCommand> => command.type === RaffleCommand.defaultConfig.type,
+  isValid: (command): command is Command<IRaffleCommand> => isRaffleCommand(command),
   execute: async (user, params, command, bot) => {
     const getMessageInfo = (message: string) =>
       message

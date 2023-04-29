@@ -1,5 +1,5 @@
 import { CONFIG } from '../utils';
-import { ITriviaCommand, TriviaCronType } from '@pezi-bot/db';
+import { ITriviaCommand, TriviaCronType, isTriviaCommand } from '@pezi-bot/db';
 
 import { Command, Cron } from '../models';
 import { CommandActionType } from '../types';
@@ -43,7 +43,7 @@ export const TriviaCommand: CommandActionType<ITriviaCommand> = {
       },
     },
   },
-  isValid: (command): command is Command<ITriviaCommand> => command.type === TriviaCommand.defaultConfig.type,
+  isValid: (command): command is Command<ITriviaCommand> => isTriviaCommand(command),
   execute: async (user, params, command, bot) => {
     const cost = command.cost;
     const currencyName = CONFIG.currencyName;

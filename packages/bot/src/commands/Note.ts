@@ -1,4 +1,4 @@
-import { INoteCommand } from '@pezi-bot/db';
+import { INoteCommand, isNoteCommand } from '@pezi-bot/db';
 
 import { MessageCommand } from './Message';
 import { Command } from '../models';
@@ -31,7 +31,7 @@ export const NoteCommand: CommandActionType<INoteCommand> = {
       },
     },
   },
-  isValid: (command): command is Command<INoteCommand> => command.type === NoteCommand.defaultConfig.type,
+  isValid: (command): command is Command<INoteCommand> => isNoteCommand(command),
   execute: async (user, params, command, bot) => {
     const modifier = params.shift();
     const name = params.shift();

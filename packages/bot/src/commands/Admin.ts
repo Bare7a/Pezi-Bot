@@ -1,4 +1,4 @@
-import { IAdminCommand } from '@pezi-bot/db';
+import { IAdminCommand, isAdminCommand } from '@pezi-bot/db';
 
 import { Command, User } from '../models';
 import { CommandActionType } from '../types';
@@ -25,7 +25,7 @@ export const AdminCommand: CommandActionType<IAdminCommand> = {
       },
     },
   },
-  isValid: (command): command is Command<IAdminCommand> => command.type === AdminCommand.defaultConfig.type,
+  isValid: (command): command is Command<IAdminCommand> => isAdminCommand(command),
   execute: async (user, params, command, bot) => {
     const [modifier, username] = params;
     if (!modifier || !username) return false;

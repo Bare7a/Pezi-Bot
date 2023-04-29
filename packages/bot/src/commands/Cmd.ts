@@ -1,4 +1,4 @@
-import { ICmdCommand } from '@pezi-bot/db';
+import { ICmdCommand, isCmdCommand } from '@pezi-bot/db';
 
 import { Command } from '../models';
 import { CommandActionType } from '../types';
@@ -27,7 +27,7 @@ export const CmdCommand: CommandActionType<ICmdCommand> = {
       },
     },
   },
-  isValid: (command): command is Command<ICmdCommand> => command.type === CmdCommand.defaultConfig.type,
+  isValid: (command): command is Command<ICmdCommand> => isCmdCommand(command),
   execute: async (user, params, command, bot) => {
     const [modifier, name, valueStr] = params;
     const cd = Number(valueStr) ? Number(valueStr) : NaN;

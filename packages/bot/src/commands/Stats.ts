@@ -1,5 +1,5 @@
 import { Op } from '@sequelize/core';
-import { IStatsCommand } from '@pezi-bot/db';
+import { IStatsCommand, isStatsCommand } from '@pezi-bot/db';
 
 import { CONFIG } from '../utils';
 import { Log, Command } from '../models';
@@ -27,7 +27,7 @@ export const StatsCommand: CommandActionType<IStatsCommand> = {
       },
     },
   },
-  isValid: (command): command is Command<IStatsCommand> => command.type === StatsCommand.defaultConfig.type,
+  isValid: (command): command is Command<IStatsCommand> => isStatsCommand(command),
   execute: async (user, _, command, bot) => {
     const userId = user.userId;
     const currencyName = CONFIG.currencyName;

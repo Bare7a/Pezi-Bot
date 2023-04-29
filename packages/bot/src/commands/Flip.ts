@@ -1,4 +1,4 @@
-import { IFlipCommand } from '@pezi-bot/db';
+import { IFlipCommand, isFlipCommand } from '@pezi-bot/db';
 
 import { CONFIG } from '../utils';
 import { Command } from '../models';
@@ -27,7 +27,7 @@ export const FlipCommand: CommandActionType<IFlipCommand> = {
       },
     },
   },
-  isValid: (command): command is Command<IFlipCommand> => command.type === FlipCommand.defaultConfig.type,
+  isValid: (command): command is Command<IFlipCommand> => isFlipCommand(command),
   execute: async (user, params, command, bot) => {
     const cost = command.getCost(params[0], user);
     const currencyName = CONFIG.currencyName;

@@ -210,3 +210,36 @@ export type CommandType<T extends ICommand> = {
   isLogEnabled: boolean;
   opts: T['opts'];
 };
+
+export const isAdminCommand = (command: CommandType<ICommand>): command is CommandType<IAdminCommand> =>
+  command.type === 'ADMIN';
+
+export const isCmdCommand = (command: CommandType<ICommand>): command is CommandType<ICmdCommand> =>
+  command.type === 'CMD';
+
+export const isNoteCommand = (command: CommandType<ICommand>): command is CommandType<INoteCommand> =>
+  command.type === 'NOTE';
+
+export const isMessageCommand = (command: CommandType<ICommand>): command is CommandType<IMessageCommand> =>
+  command.type === 'MESSAGE';
+
+export const isFlipCommand = (command: CommandType<ICommand>): command is CommandType<IFlipCommand> =>
+  command.type === 'FLIP';
+
+export const isDiceCommand = (command: CommandType<ICommand>): command is CommandType<IDiceCommand> =>
+  command.type === 'DICE';
+
+export const isRaffleCommand = (command: CommandType<ICommand>): command is CommandType<IRaffleCommand> =>
+  command.type === 'RAFFLE';
+
+export const isSlotCommand = (command: CommandType<ICommand>): command is CommandType<ISlotCommand> =>
+  command.type === 'SLOT';
+
+export const isStatsCommand = (command: CommandType<ICommand>): command is CommandType<IStatsCommand> =>
+  command.type === 'STATS';
+
+export const isTriviaCommand = (command: CommandType<ICommand>): command is CommandType<ITriviaCommand> =>
+  command.type === 'TRIVIA';
+
+export const isPointsCommand = (command: CommandType<ICommand>): command is CommandType<IPointsCommand> =>
+  command.type === 'POINTS';

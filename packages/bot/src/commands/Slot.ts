@@ -1,4 +1,4 @@
-import { ISlotCommand } from '@pezi-bot/db';
+import { ISlotCommand, isSlotCommand } from '@pezi-bot/db';
 
 import { Command } from '../models';
 import { CONFIG } from '../utils';
@@ -35,7 +35,7 @@ export const SlotCommand: CommandActionType<ISlotCommand> = {
       },
     },
   },
-  isValid: (command): command is Command<ISlotCommand> => command.type === SlotCommand.defaultConfig.type,
+  isValid: (command): command is Command<ISlotCommand> => isSlotCommand(command),
   execute: async (user, params, command, bot) => {
     const cost = command.getCost(params[0], user);
     const currencyName = CONFIG.currencyName;
