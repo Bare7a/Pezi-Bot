@@ -1,15 +1,15 @@
+export * from './commands';
+export * from './crons';
+export * from './models';
+export * from './types';
+export * from './utils';
+
 import NodeCron from 'node-cron';
 import { ChatUserstate } from 'tmi.js';
 
 import { User, Command, Cron, syncDb } from './models';
 import { CONFIG, TwitchClient } from './utils';
 import { giveViewersRewards, updateStreamStatus, updateTriviaQuestion, updateRaffleBets } from './crons';
-
-export * from './commands';
-export * from './crons';
-export * from './models';
-export * from './types';
-export * from './utils';
 
 export const start = async () => {
   await syncDb();
