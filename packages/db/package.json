@@ -1,6 +1,5 @@
 {
-  "name": "pezi-bot",
-  "private": true,
+  "name": "@pezi-bot/db",
   "version": "1.0.2",
   "license": "GPL-3.0",
   "author": "Bare7a <bare7a@gmail.com> (http://github.com/Bare7a)",
@@ -14,18 +13,20 @@
     "mini",
     "games"
   ],
-  "workspaces": [
-    "packages/*"
-  ],
+  "main": "dist/index.js",
   "scripts": {
     "dev": "npm run build && npm run start",
-    "build": "npx tsc --build --force",
-    "start": "node ./packages/bot/dist/app.js",
-    "export": "node ./packages/bot/dist/configurator/Exporter.js",
-    "import": "node ./packages/bot/dist/configurator/Importer.js"
+    "build": "npx tsc",
+    "start": "node ./dist/bot/index.js",
+    "export": "node ./dist/bot/configurator/Exporter.js",
+    "import": "node ./dist/bot/configurator/Importer.js"
   },
   "dependencies": {
-    "@pezi-bot/bot": "^1.0.2",
-    "@pezi-bot/db": "^1.0.2"
+    "@sequelize/core": "^7.0.0-alpha.23",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "typescript": "^5.0.4"
   }
 }
