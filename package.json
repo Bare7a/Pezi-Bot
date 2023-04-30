@@ -18,14 +18,14 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run build && npm run start",
-    "build": "npx tsc --build --force",
-    "start": "node ./packages/bot/dist/app.js",
-    "ndev": "npx next dev ./packages/web",
-    "nbuild": "npx next build ./packages/web",
-    "nstart": "npx next start ./packages/web",
-    "export": "node ./packages/bot/dist/configurator/Exporter.js",
-    "import": "node ./packages/bot/dist/configurator/Importer.js"
+    "export": "npm run export -w @pezi-bot/bot",
+    "import": "npm run import -w @pezi-bot/bot",
+    "dev:bot": "npm run dev -w @pezi-bot/bot",
+    "build:bot": "npm run build -w @pezi-bot/bot",
+    "start:bot": "npm run start -w @pezi-bot/bot",
+    "dev:web": "npm run dev -w @pezi-bot/web",
+    "build:web": "npm run build -w @pezi-bot/web",
+    "start:web": "npm run start -w @pezi-bot/web"
   },
   "dependencies": {
     "@pezi-bot/bot": "^1.0.2",

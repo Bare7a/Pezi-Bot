@@ -17,9 +17,9 @@
   "scripts": {
     "dev": "npm run build && npm run start",
     "build": "npx tsc --build --force",
-    "start": "node ./dist/bot/app.js",
-    "export": "node ./dist/bot/configurator/Exporter.js",
-    "import": "node ./dist/bot/configurator/Importer.js"
+    "start": "node ./dist/app.js",
+    "export": "node ./dist/configurator/Exporter.js",
+    "import": "node ./dist/configurator/Importer.js"
   },
   "dependencies": {
     "@pezi-bot/db": "^1.0.2",
