@@ -17,9 +17,10 @@
   "scripts": {
     "dev": "npx nodemon",
     "build": "npx next build && npx tsc --project tsconfig.server.json",
-    "start": "node dist/server.js"
+    "start": "cross-env NODE_ENV=production node dist/server.js"
   },
   "dependencies": {
+    "cross-env": "^7.0.3",
     "next": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
