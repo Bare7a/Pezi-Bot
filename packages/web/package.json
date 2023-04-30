@@ -16,7 +16,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "npx nodemon",
-    "build": "npx next build && npx tsc  --project tsconfig.server.json",
+    "build": "npx next build && npx tsc --project tsconfig.server.json",
     "start": "node dist/server.js"
   },
   "dependencies": {
