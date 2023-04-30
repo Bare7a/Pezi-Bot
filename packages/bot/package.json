@@ -31,7 +31,7 @@
     "tmi.js": "^1.8.5"
   },
   "devDependencies": {
-    "@types/node": "^18.15.11",
+    "@types/node": "18.16.3",
     "@types/node-cron": "^3.0.7",
     "@types/tmi.js": "^1.8.3",
     "typescript": "^5.0.4"

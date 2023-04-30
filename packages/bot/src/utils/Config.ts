@@ -12,8 +12,8 @@ export const CONFIG: ConfigType = {
   refreshToken: process.env.bot_refresh_token ?? 'NOT_DEFINED',
   currencyName: process.env.bot_currency_name ?? 'NOT_DEFINED',
   defaultPoints: Number(process.env.bot_default_points ?? -1337),
-  dbPath: process.env.bot_db_path ?? path.join(__dirname, '..', '..', '..', '..', 'db.sqlite'),
-  logPath: process.env.bot_db_path ?? path.join(__dirname, '..', '..', '..', '..', 'log.sqlite'),
+  dbPath: process.env.bot_db_path ?? path.join(process.cwd(), 'db.sqlite'),
+  logPath: process.env.bot_db_path ?? path.join(process.cwd(), 'log.sqlite'),
 };
 
 if (['NOT_DEFINED', -1337].some((invalidValue) => Object.values(CONFIG).includes(invalidValue)))

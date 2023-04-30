@@ -7,7 +7,7 @@ import { Command, Cron, User, syncDb } from '../models';
 (async () => {
   await syncDb();
 
-  const configPath = path.join(__dirname, '..', '..', 'config');
+  const configPath = path.join(process.cwd(), 'config');
 
   const cronsPath = path.join(configPath, 'crons.json');
   const usersPath = path.join(configPath, 'users.json');

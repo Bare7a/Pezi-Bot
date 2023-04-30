@@ -22,7 +22,7 @@
     "@sequelize/core": "^7.0.0-alpha.23"
   },
   "devDependencies": {
-    "@types/node": "^18.15.11",
+    "@types/node": "18.16.3",
     "typescript": "^5.0.4"
   }
 }

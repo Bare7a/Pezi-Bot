@@ -11,7 +11,7 @@ import { Command, Cron, User, syncDb } from '../models';
 
   await syncDb();
 
-  const configPath = path.join(__dirname, '..', '..', 'config');
+  const configPath = path.join(process.cwd(), 'config');
   const isConfigPathExists = await isDirExist(configPath);
 
   if (!isConfigPathExists) {
