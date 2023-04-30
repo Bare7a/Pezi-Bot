@@ -1,15 +1,13 @@
 import NodeCron from 'node-cron';
 import Sequelize from '@sequelize/core';
 import { ChatUserstate } from 'tmi.js';
-import { ICommand, ICron } from '@pezi-bot/db';
 
 import { CONFIG, TwitchClient } from '.';
 import { User, Command, Cron, Log } from '../models';
 import { giveViewersRewards, updateStreamStatus, updateTriviaQuestion, updateRaffleBets } from '../crons';
 
-type DbType = { User: typeof User; Cron: typeof Cron<ICron>; Command: typeof Command<ICommand>; Log: typeof Log };
+type DbType = { User: typeof User; Cron: typeof Cron; Command: typeof Command; Log: typeof Log };
 
-console.log(CONFIG);
 export class App {
   private static isStarted = false;
 
@@ -20,7 +18,7 @@ export class App {
     if (App.isStarted) return true;
     App.isStarted = true;
 
-    const db = await loadDb();
+    const db = await App.loadDb();
 
     const bot = new TwitchClient({ identity: CONFIG, channels: [CONFIG.streamer] }, CONFIG);
     await bot.start();
@@ -63,33 +61,33 @@ export class App {
 
     return true;
   }
+
+  static async loadDb() {
+    const sequelizeDb = new Sequelize({
+      logging: false,
+      dialect: 'sqlite',
+      storage: CONFIG.dbPath,
+    });
+    User.init(User.defaultAttributes, { sequelize: sequelizeDb });
+    Cron.init(Cron.defaultAttributes, { sequelize: sequelizeDb });
+    Command.init(Command.defaultAttributes, { sequelize: sequelizeDb });
+    await sequelizeDb.sync();
+
+    const sequelizeLog = new Sequelize({
+      logging: false,
+      dialect: 'sqlite',
+      storage: CONFIG.logPath,
+    });
+    Log.init(Log.defaultAttributes, { sequelize: sequelizeLog });
+    await sequelizeLog.sync();
+
+    const [cronsCount, commandsCount] = await Promise.all([Cron.count(), Command.count()]);
+
+    const promises = [];
+    if (cronsCount === 0) promises.push(Cron.seed());
+    if (commandsCount === 0) promises.push(Command.seed());
+    await Promise.all(promises);
+
+    return { User, Cron, Command, Log };
+  }
 }
-
-export const loadDb = async () => {
-  const sequelizeDb = new Sequelize({
-    logging: false,
-    dialect: 'sqlite',
-    storage: CONFIG.dbPath,
-  });
-  User.init(User.defaultAttributes, { sequelize: sequelizeDb });
-  Cron.init(Cron.defaultAttributes, { sequelize: sequelizeDb });
-  Command.init(Command.defaultAttributes, { sequelize: sequelizeDb });
-  await sequelizeDb.sync();
-
-  const sequelizeLog = new Sequelize({
-    logging: false,
-    dialect: 'sqlite',
-    storage: CONFIG.logPath,
-  });
-  Log.init(Log.defaultAttributes, { sequelize: sequelizeLog });
-  await sequelizeLog.sync();
-
-  const [cronsCount, commandsCount] = await Promise.all([Cron.count(), Command.count()]);
-
-  const promises = [];
-  if (cronsCount === 0) promises.push(Cron.seed());
-  if (commandsCount === 0) promises.push(Command.seed());
-  await Promise.all(promises);
-
-  return { User, Cron, Command, Log };
-};

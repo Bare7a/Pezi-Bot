@@ -1,8 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-import { loadDb } from '../utils/App';
-import { Command, Cron, User } from '../models';
+import { App } from '../utils';
 
 (async () => {
   const isDirExist = async (path: string) =>
@@ -10,8 +9,6 @@ import { Command, Cron, User } from '../models';
       .access(path)
       .then(() => true)
       .catch(() => false);
-
-  await loadDb();
 
   const configPath = path.join(process.cwd(), 'config');
   const isConfigPathExists = await isDirExist(configPath);
@@ -24,6 +21,7 @@ import { Command, Cron, User } from '../models';
   const usersPath = path.join(configPath, 'users.json');
   const commandsPath = path.join(configPath, 'commands.json');
 
+  const { Command, Cron, User } = await App.loadDb();
   const [crons, users, commands] = await Promise.all([Cron.findAll(), User.findAll(), Command.findAll()]);
   await Promise.all([
     fs.writeFile(cronsPath, JSON.stringify(crons, null, 2)),
