@@ -2,10 +2,11 @@ import fs from 'fs/promises';
 import path from 'path';
 import { CommandType, CronType, ICommand, ICron, UserType } from '@pezi-bot/db';
 
-import { Command, Cron, User, syncDb } from '../models';
+import { loadDb } from '../utils/App';
+import { Command, Cron, User } from '../models';
 
 (async () => {
-  await syncDb();
+  await loadDb();
 
   const configPath = path.join(process.cwd(), 'config');
 

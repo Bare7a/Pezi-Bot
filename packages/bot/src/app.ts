@@ -1,3 +1,2 @@
-import { start } from '.';
-
-start();
+import { App } from './utils/App';
+App.start();

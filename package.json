@@ -19,9 +19,11 @@
   ],
   "scripts": {
     "dev": "npm run build && npm run start",
-    "ndev": "npx next dev ./packages/web",
     "build": "npx tsc --build --force",
     "start": "node ./packages/bot/dist/app.js",
+    "ndev": "npx next dev ./packages/web",
+    "nbuild": "npx next build ./packages/web",
+    "nstart": "npx next start ./packages/web",
     "export": "node ./packages/bot/dist/configurator/Exporter.js",
     "import": "node ./packages/bot/dist/configurator/Importer.js"
   },

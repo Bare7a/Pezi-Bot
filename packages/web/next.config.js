@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
+const { App } = require('@pezi-bot/bot');
+
 const nextConfig = {
   reactStrictMode: true,
-}
+};
 
-module.exports = nextConfig
+App.start();
+
+module.exports = nextConfig;

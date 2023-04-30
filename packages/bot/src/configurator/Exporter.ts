@@ -1,6 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { Command, Cron, User, syncDb } from '../models';
+
+import { loadDb } from '../utils/App';
+import { Command, Cron, User } from '../models';
 
 (async () => {
   const isDirExist = async (path: string) =>
@@ -9,7 +11,7 @@ import { Command, Cron, User, syncDb } from '../models';
       .then(() => true)
       .catch(() => false);
 
-  await syncDb();
+  await loadDb();
 
   const configPath = path.join(process.cwd(), 'config');
   const isConfigPathExists = await isDirExist(configPath);
