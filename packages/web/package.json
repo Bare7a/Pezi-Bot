@@ -17,7 +17,7 @@
   "scripts": {
     "dev": "npx nodemon",
     "build": "npx next build && npx tsc --project tsconfig.server.json",
-    "start": "cross-env NODE_ENV=production node dist/server.js"
+    "start": "npx cross-env NODE_ENV=production node dist/server.js"
   },
   "dependencies": {
     "cross-env": "^7.0.3",
