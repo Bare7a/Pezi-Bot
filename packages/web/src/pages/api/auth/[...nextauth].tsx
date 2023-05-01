@@ -12,7 +12,6 @@ export default NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials, _) {
-        console.log(CONFIG.webAppUrl);
         const res = await fetch(`${CONFIG.webAppUrl}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
