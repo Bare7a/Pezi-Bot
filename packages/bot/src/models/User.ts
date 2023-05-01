@@ -1,7 +1,6 @@
 import { ChatUserstate } from 'tmi.js';
-import { User as DBUser, ICommand, RewardCronType, StatusCronType, UserRoleType, UserType } from '@pezi-bot/db';
+import { User as DBUser, RewardCronType, UserRoleType, UserType } from '@pezi-bot/db';
 
-import { Command } from './Command';
 import { Cron } from './Cron';
 import { Log } from './Log';
 import { CONFIG } from '../utils/Config';
@@ -84,33 +83,6 @@ export class User extends DBUser {
     if (user.isVIP) return 'vip';
     if (user.isSub) return 'sub';
     return 'member';
-  }
-
-  async canExecuteCommand(command: Command<ICommand>): Promise<Boolean> {
-    const user = this;
-    const currentTime = new Date();
-
-    const cronStatus = await Cron.fetch<StatusCronType>('STATUS');
-
-    const userRoleType = user.getRoleType();
-    const isStreamOnline = cronStatus.opts.isOnline;
-
-    const userCd = command.userCd;
-    const globalCd = command.globalCd;
-    const userLastCallTimeStr = user.commands[command.type];
-
-    const userLastCallTime = userLastCallTimeStr ? new Date(userLastCallTimeStr) : new Date(0);
-    const globalLastCallTime = command.lastCalledAt ?? new Date(0);
-
-    const isUserTimeAvailable = (currentTime.getTime() - userLastCallTime.getTime()) / 1000 >= userCd;
-    const isGlobalTimeAvailable = (currentTime.getTime() - globalLastCallTime.getTime()) / 1000 >= globalCd;
-
-    const isUserPermitted = command.permission.includes(userRoleType);
-    const isCommandEnabled = command.isEnabled && ((isStreamOnline && command.onlyOnline) || !command.onlyOnline);
-    const isCdTimeAvailable = isUserTimeAvailable && isGlobalTimeAvailable;
-
-    const isCommandExecutable = isCommandEnabled && isUserPermitted && isCdTimeAvailable;
-    return isCommandExecutable;
   }
 
   async addPoints(cost: number, points: number, type: string, log: boolean) {

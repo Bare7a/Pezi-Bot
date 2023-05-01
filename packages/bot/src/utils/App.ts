@@ -1,14 +1,16 @@
 import NodeCron from 'node-cron';
 import Sequelize from '@sequelize/core';
 import { ChatUserstate } from 'tmi.js';
+import { ICommand } from '@pezi-bot/db';
 
 import { CONFIG } from './Config';
 import { TwitchClient } from './Bot';
+
 import { Command } from '../models/Command';
 import { Cron } from '../models/Cron';
 import { User } from '../models/User';
 import { Log } from '../models/Log';
-import { RewardCron } from '../crons/Rewards';
+
 import { AdminCommand } from '../commands/Admin';
 import { CmdCommand } from '../commands/Cmd';
 import { DiceCommand } from '../commands/Dice';
@@ -20,10 +22,11 @@ import { RaffleCommand } from '../commands/Raffle';
 import { SlotCommand } from '../commands/Slot';
 import { StatsCommand } from '../commands/Stats';
 import { TriviaCommand } from '../commands/Trivia';
+
+import { RewardCron } from '../crons/Rewards';
 import { RaffleCron } from '../crons/Raffle';
 import { StatusCron } from '../crons/Status';
 import { TriviaCron } from '../crons/Trivia';
-import { ICommand } from '@pezi-bot/db';
 
 export type DbConnection = { Command: typeof Command; Cron: typeof Cron; User: typeof User; Log: typeof Log };
 export abstract class App {
