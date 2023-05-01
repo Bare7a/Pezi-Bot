@@ -7,6 +7,6 @@ type CommandItem = {
 };
 
 export default async function commandsHandler({ db }: NextApiRequest, res: NextApiResponse<CommandItem[]>) {
-  const commands = (await db.Command.findAll({ attributes: ['id', 'name', 'type'] })) as CommandItem[];
+  const commands = await db.Command.findAll({ attributes: ['id', 'name', 'type'] });
   return res.status(200).json(commands);
 }

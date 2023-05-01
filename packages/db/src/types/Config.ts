@@ -1,5 +1,4 @@
 export type ConfigType = {
-  id?: number;
   streamer: string;
   username: string;
   password: string;
@@ -8,4 +7,9 @@ export type ConfigType = {
   refreshToken: string;
   currencyName: string;
   defaultPoints: number;
+  dbPath: string;
+  logPath: string;
+  webAppUrl: string;
+  webAppPort: number;
+  webAppSecret: string;
 };
