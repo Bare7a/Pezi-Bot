@@ -5,24 +5,18 @@ import { ChatUserstate } from 'tmi.js';
 import { CONFIG, TwitchClient } from '.';
 import { User, Command, Cron, Log } from '../models';
 import { giveViewersRewards, updateStreamStatus, updateTriviaQuestion, updateRaffleBets } from '../crons';
-
-type DbType = { User: typeof User; Cron: typeof Cron; Command: typeof Command; Log: typeof Log };
-
-export class App {
+export abstract class App {
   private static isStarted = false;
 
-  static db?: DbType;
-  static bot?: TwitchClient;
+  static db = { Command, Cron, User, Log };
+  static bot = new TwitchClient({ identity: CONFIG, channels: [CONFIG.streamer] }, CONFIG);
 
   static async start() {
     if (App.isStarted) return true;
     App.isStarted = true;
 
-    const db = await App.loadDb();
-
-    const bot = new TwitchClient({ identity: CONFIG, channels: [CONFIG.streamer] }, CONFIG);
-    await bot.start();
-    bot.on('message', async (_, userstate: ChatUserstate, message: string): Promise<boolean> => {
+    Promise.all([await App.loadDb(), App.loadBot()]);
+    App.bot.on('message', async (_, userstate: ChatUserstate, message: string): Promise<boolean> => {
       try {
         const params = message.split(' ');
         const commandName = params.shift();
@@ -37,10 +31,10 @@ export class App {
 
         if (!command) return false;
 
-        const userCanExecute = await command.canUserExecute(user, bot);
+        const userCanExecute = await command.canUserExecute(user, App.bot);
         if (!userCanExecute) return false;
 
-        const isExecutedSuccesfully = await command.execute(user, params, bot);
+        const isExecutedSuccesfully = await command.execute(user, params, App.bot);
         if (isExecutedSuccesfully) await command.addCooldowns(user);
 
         return true;
@@ -54,10 +48,7 @@ export class App {
 
     await Cron.resetExecution();
     const cronJobs = [updateStreamStatus, giveViewersRewards, updateTriviaQuestion, updateRaffleBets];
-    NodeCron.schedule(`*/1 * * * * *`, async () => await Promise.all(cronJobs.map((cronJob) => cronJob(bot))));
-
-    App.db = db;
-    App.bot = bot;
+    NodeCron.schedule(`*/1 * * * * *`, async () => await Promise.all(cronJobs.map((cronJob) => cronJob(App.bot))));
 
     return true;
   }
@@ -88,6 +79,11 @@ export class App {
     if (commandsCount === 0) promises.push(Command.seed());
     await Promise.all(promises);
 
-    return { User, Cron, Command, Log };
+    return { Command, Cron, User, Log };
+  }
+
+  static async loadBot() {
+    await App.bot.start();
+    return App.bot;
   }
 }

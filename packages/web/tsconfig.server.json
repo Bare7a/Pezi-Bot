@@ -3,10 +3,9 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "dist",
-    "lib": ["es2019"],
-    "target": "es2019",
+    "target": "es2017",
     "isolatedModules": false,
     "noEmit": false
   },
-  "include": ["./src/server.ts"]
+  "include": ["server/**/*.ts"]
 }
