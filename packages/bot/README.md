@@ -13,25 +13,26 @@ Welcome to **Pezi Bot**, the ultimate chatbot for your Twitch channel! **Pezi Bo
 ```bash
 bot_streamer="bare7a"
 bot_username="pezi_bot"
-bot_password="oauth:abcdefghi12jkllmnop34qr5stuvwx"
 bot_client_id="ab123cdefghijklmn4o567pq8st9u"
 bot_access_token="1abcdefghijklmnopqr23stuvw4xy4"
-bot_refresh_token="a1bcdef23ghijk4lmnop5qr6st7uvwxyzabc8defghijk8lmno"
 bot_currency_name="points"
 bot_default_points="100"
+bot_web_app_url="http://localhost:3000"
+bot_web_app_port="3000"
+bot_web_app_secret="q6^7%NGnAw2yE(yURDXK2*v+azY7wrhm"
 ```
 
 - **bot_streamer** - Username of the streamer of which the bot will be running in
 - **bot_username** - Bot's username
-- **bot_password** - Oath token for the bot for connecting to the Twitch chat
 - **bot_client_id** - Id of the bot
 - **bot_access_token** - Access token for calling the API's
-- **bot_refresh_token** - Refresh token for updating the access token
 - **bot_currency_name** - Name of the currency that the bot will use
 - **bot_default_points** - Initial points that the new users will start with
+- **bot_web_app_url** - Web App full url address, http://localhost:3000 by default
+- **bot_web_app_port** - Web App port: 3000 by default
+- **bot_web_app_secret** - Web App secret key used for authentication
 
-You can use: https://twitchapps.com/tmi/ for **bot_password**\
-You can use: https://twitchtokengenerator.com/ for **bot_client_id**, **bot_access_token** and **bot_refresh_token**
+You can use: https://twitchtokengenerator.com/ for **bot_client_id** and **bot_access_token**
 
 4. Run `npm run build` to compile
 5. Run `npm run start` to start the application
