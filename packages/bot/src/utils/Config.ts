@@ -1,5 +1,5 @@
 import path from 'path';
-import { ConfigType } from '../types';
+import { ConfigType } from '../types/Config';
 import { config } from 'dotenv';
 
 const dirs = { dir1: process.cwd(), dir2: path.normalize('../../') };

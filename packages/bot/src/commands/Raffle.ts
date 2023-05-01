@@ -1,8 +1,9 @@
 import { IRaffleCommand, RaffleCronType, isRaffleCommand } from '@pezi-bot/db';
 
-import { CONFIG } from '../utils';
-import { Command, Cron } from '../models';
-import { CommandActionType } from '../types';
+import { CONFIG } from '../utils/Config';
+import { Command } from '../models/Command';
+import { Cron } from '../models/Cron';
+import { CommandActionType } from '../types/Command';
 
 export const RaffleCommand: CommandActionType<IRaffleCommand> = {
   defaultConfig: {

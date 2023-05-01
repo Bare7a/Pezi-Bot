@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { CONFIG } from '.';
-import { ApiTwitchIds, ApiTwitchStatus, ApiViewersIds, TwitchIds } from '../types';
+import { CONFIG } from './Config';
+import { ApiTwitchIds, ApiTwitchStatus, ApiViewersIds, TwitchIds } from '../types/Twitch';
 
 export class Api {
   private static twitchIds: TwitchIds = false;

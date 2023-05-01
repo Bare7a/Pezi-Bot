@@ -1,4 +1,4 @@
-import { UserRoleType } from '.';
+import { UserRoleType } from './User';
 
 export type IAdminCommand = {
   type: 'ADMIN';

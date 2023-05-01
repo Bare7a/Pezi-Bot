@@ -1,9 +1,10 @@
 import { Op } from '@sequelize/core';
 import { IStatsCommand, isStatsCommand } from '@pezi-bot/db';
 
-import { CONFIG } from '../utils';
-import { Log, Command } from '../models';
-import { CommandActionType } from '../types';
+import { CONFIG } from '../utils/Config';
+import { Log } from '../models/Log';
+import { Command } from '../models/Command';
+import { CommandActionType } from '../types/Command';
 
 export const StatsCommand: CommandActionType<IStatsCommand> = {
   defaultConfig: {

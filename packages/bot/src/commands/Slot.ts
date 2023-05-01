@@ -1,8 +1,8 @@
 import { ISlotCommand, isSlotCommand } from '@pezi-bot/db';
 
-import { Command } from '../models';
-import { CONFIG } from '../utils';
-import { CommandActionType } from '../types';
+import { CONFIG } from '../utils/Config';
+import { Command } from '../models/Command';
+import { CommandActionType } from '../types/Command';
 
 export const SlotCommand: CommandActionType<ISlotCommand> = {
   defaultConfig: {

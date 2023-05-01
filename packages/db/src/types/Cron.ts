@@ -1,4 +1,4 @@
-import { UserRoleType } from '.';
+import { UserRoleType } from './User';
 
 export type RaffleCronType = {
   type: 'RAFFLE';
@@ -62,3 +62,8 @@ export type CronType<T extends ICron> = {
   callAt: Date;
   opts: T['opts'];
 };
+
+export const isRaffleCron = (cron: CronType<ICron>): cron is CronType<RaffleCronType> => cron.type === 'RAFFLE';
+export const isRewardCron = (cron: CronType<ICron>): cron is CronType<RewardCronType> => cron.type === 'REWARDS';
+export const isStatusCron = (cron: CronType<ICron>): cron is CronType<StatusCronType> => cron.type === 'STATUS';
+export const isTriviaCron = (cron: CronType<ICron>): cron is CronType<TriviaCronType> => cron.type === 'TRIVIA';

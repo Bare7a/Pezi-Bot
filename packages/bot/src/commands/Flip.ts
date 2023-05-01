@@ -1,8 +1,8 @@
 import { IFlipCommand, isFlipCommand } from '@pezi-bot/db';
 
-import { CONFIG } from '../utils';
-import { Command } from '../models';
-import { CommandActionType } from '../types';
+import { CONFIG } from '../utils/Config';
+import { Command } from '../models/Command';
+import { CommandActionType } from '../types/Command';
 
 export const FlipCommand: CommandActionType<IFlipCommand> = {
   defaultConfig: {

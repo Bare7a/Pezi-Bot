@@ -1,22 +1,9 @@
 import { WhereAttributeHashValue } from '@sequelize/core';
 import { Command as DBCommand, ICommand, IMessageCommand, StatusCronType } from '@pezi-bot/db';
 
-import { Cron, User } from '.';
-
-import {
-  AdminCommand,
-  CmdCommand,
-  DiceCommand,
-  FlipCommand,
-  PointsCommand,
-  SlotCommand,
-  NoteCommand,
-  MessageCommand,
-  StatsCommand,
-  RaffleCommand,
-  TriviaCommand,
-} from '../commands';
-import { TwitchClient } from '../utils';
+import { Cron } from './Cron';
+import { User } from './User';
+import { TwitchClient } from '../utils/Bot';
 
 export class Command<T extends ICommand> extends DBCommand<T> {
   static async fetch<T extends ICommand>(type: WhereAttributeHashValue<T['type']>): Promise<Command<T>> {
@@ -65,21 +52,6 @@ export class Command<T extends ICommand> extends DBCommand<T> {
     return isCommandExecutable;
   }
 
-  async execute(user: User, params: string[], bot: TwitchClient): Promise<Boolean> {
-    if (AdminCommand.isValid(this)) return await AdminCommand.execute(user, params, this, bot);
-    if (CmdCommand.isValid(this)) return await CmdCommand.execute(user, params, this, bot);
-    if (DiceCommand.isValid(this)) return await DiceCommand.execute(user, params, this, bot);
-    if (FlipCommand.isValid(this)) return await FlipCommand.execute(user, params, this, bot);
-    if (MessageCommand.isValid(this)) return await MessageCommand.execute(user, params, this, bot);
-    if (NoteCommand.isValid(this)) return await NoteCommand.execute(user, params, this, bot);
-    if (PointsCommand.isValid(this)) return await PointsCommand.execute(user, params, this, bot);
-    if (RaffleCommand.isValid(this)) return await RaffleCommand.execute(user, params, this, bot);
-    if (SlotCommand.isValid(this)) return await SlotCommand.execute(user, params, this, bot);
-    if (StatsCommand.isValid(this)) return await StatsCommand.execute(user, params, this, bot);
-    if (TriviaCommand.isValid(this)) return await TriviaCommand.execute(user, params, this, bot);
-    return false;
-  }
-
   async addCooldowns(user: User): Promise<void> {
     const command = this;
     const currentTime = new Date();
@@ -118,23 +90,5 @@ export class Command<T extends ICommand> extends DBCommand<T> {
     });
 
     return command;
-  }
-
-  static async seed(): Promise<void> {
-    const commands = [
-      AdminCommand.defaultConfig,
-      CmdCommand.defaultConfig,
-      DiceCommand.defaultConfig,
-      FlipCommand.defaultConfig,
-      MessageCommand.defaultConfig,
-      NoteCommand.defaultConfig,
-      PointsCommand.defaultConfig,
-      RaffleCommand.defaultConfig,
-      SlotCommand.defaultConfig,
-      StatsCommand.defaultConfig,
-      TriviaCommand.defaultConfig,
-    ];
-
-    await Command.bulkCreate(commands);
   }
 }

@@ -1,8 +1,8 @@
 import { INoteCommand, isNoteCommand } from '@pezi-bot/db';
 
 import { MessageCommand } from './Message';
-import { Command } from '../models';
-import { CommandActionType } from '../types';
+import { Command } from '../models/Command';
+import { CommandActionType } from '../types/Command';
 
 export const NoteCommand: CommandActionType<INoteCommand> = {
   defaultConfig: {

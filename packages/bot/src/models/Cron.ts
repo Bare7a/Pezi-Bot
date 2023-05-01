@@ -1,5 +1,5 @@
 import { WhereAttributeHashValue } from '@sequelize/core';
-import { Cron as DBCron, CronType, ICron } from '@pezi-bot/db';
+import { Cron as DBCron, ICron } from '@pezi-bot/db';
 
 export class Cron<T extends ICron> extends DBCron<T> {
   isExecutePermited(): Boolean {
@@ -24,78 +24,5 @@ export class Cron<T extends ICron> extends DBCron<T> {
 
   static async resetExecution() {
     await Cron.update({ isExecuting: false }, { where: { isExecuting: true } });
-  }
-
-  static async seed() {
-    const crons: CronType<ICron>[] = [
-      {
-        type: 'STATUS',
-        interval: 60,
-        isEnabled: true,
-        isExecuting: false,
-        isLogEnabled: true,
-        lastCalledAt: new Date(0),
-        callAt: new Date(0),
-        opts: {
-          isOnline: false,
-        },
-      },
-      {
-        type: 'REWARDS',
-        interval: 300,
-        isEnabled: true,
-        isExecuting: false,
-        isLogEnabled: true,
-        lastCalledAt: new Date(0),
-        callAt: new Date(0),
-        opts: {
-          chatters: {},
-          view: {
-            streamer: 6,
-            admin: 6,
-            mod: 6,
-            vip: 6,
-            sub: 10,
-            member: 5,
-          },
-          chat: {
-            streamer: 2,
-            admin: 2,
-            mod: 2,
-            vip: 2,
-            sub: 2,
-            member: 2,
-          },
-        },
-      },
-      {
-        type: 'TRIVIA',
-        interval: 0,
-        isEnabled: true,
-        isExecuting: false,
-        isLogEnabled: true,
-        lastCalledAt: new Date(0),
-        callAt: new Date(0),
-        opts: {
-          previousQuestions: {},
-        },
-      },
-      {
-        type: 'RAFFLE',
-        interval: 0,
-        isEnabled: true,
-        isExecuting: false,
-        isLogEnabled: true,
-        lastCalledAt: new Date(0),
-        callAt: new Date(0),
-        opts: {
-          pot: 0,
-          userList: [],
-          isBettingOpened: false,
-        },
-      },
-    ];
-
-    await Cron.bulkCreate(crons);
   }
 }

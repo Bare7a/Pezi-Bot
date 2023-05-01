@@ -1,7 +1,8 @@
 import { IAdminCommand, isAdminCommand } from '@pezi-bot/db';
 
-import { Command, User } from '../models';
-import { CommandActionType } from '../types';
+import { User } from '../models/User';
+import { Command } from '../models/Command';
+import { CommandActionType } from '../types/Command';
 
 export const AdminCommand: CommandActionType<IAdminCommand> = {
   defaultConfig: {

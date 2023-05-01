@@ -6,8 +6,10 @@ import {
   ModelAttributes,
   DataTypes,
 } from '@sequelize/core';
-import { ICommand, CommandType, UserRoleType } from '../types';
 import { PartialBy } from '@sequelize/core/types/utils/types';
+
+import { CommandType, ICommand } from '../types/Command';
+import { UserRoleType } from '../types/User';
 
 type CommandAttributes = Command<ICommand>;
 export class Command<T extends ICommand>

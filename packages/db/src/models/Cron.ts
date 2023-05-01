@@ -7,7 +7,7 @@ import {
   ModelAttributes,
   WhereAttributeHashValue,
 } from '@sequelize/core';
-import { ICron } from '../types';
+import { ICron } from '../types/Cron';
 import { PartialBy } from '@sequelize/core/types/utils/types';
 
 type CronAttributes = Cron<ICron>;

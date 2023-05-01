@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { CommandType, CronType, ICommand, ICron, UserType } from '@pezi-bot/db';
 
-import { App } from '../utils';
+import { App } from '../utils/App';
 
 (async () => {
   const configPath = path.join(process.cwd(), 'config');

@@ -1,5 +1,4 @@
 import { PartialBy } from '@sequelize/core/types/utils/types';
-import { UserType } from '../types';
 import {
   Model,
   CreationOptional,
@@ -8,6 +7,8 @@ import {
   DataTypes,
   ModelAttributes,
 } from '@sequelize/core';
+
+import { UserType } from '../types/User';
 
 type UserAttributes = User;
 export class User

@@ -6,7 +6,7 @@ import {
   Model,
   ModelAttributes,
 } from '@sequelize/core';
-import { LogType } from '../types';
+import { LogType } from '../types/Log';
 import { PartialBy } from '@sequelize/core/types/utils/types';
 
 type LogAttributes = Log;

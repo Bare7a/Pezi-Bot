@@ -1,9 +1,11 @@
 import { ChatUserstate } from 'tmi.js';
 import { User as DBUser, ICommand, RewardCronType, StatusCronType, UserRoleType, UserType } from '@pezi-bot/db';
 
-import { Command, Cron, Log } from '.';
-import { CONFIG } from '../utils';
-import { ValidUserState } from '../types';
+import { Command } from './Command';
+import { Cron } from './Cron';
+import { Log } from './Log';
+import { CONFIG } from '../utils/Config';
+import { ValidUserState } from '../types/User';
 
 export class User extends DBUser {
   static isValidUserState = (account: ChatUserstate): account is ValidUserState => 'display-name' in account;

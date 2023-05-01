@@ -1,7 +1,8 @@
 import { CommandType, ICommand } from '@pezi-bot/db';
 
-import { Command, User } from '../models';
-import { TwitchClient } from '../utils';
+import { Command } from '../models/Command';
+import { User } from '../models/User';
+import { TwitchClient } from '../utils/Bot';
 
 export type CommandActionType<T extends ICommand> = {
   defaultConfig: CommandType<T>;

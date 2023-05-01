@@ -1,8 +1,9 @@
-import { CONFIG } from '../utils';
 import { ITriviaCommand, TriviaCronType, isTriviaCommand } from '@pezi-bot/db';
 
-import { Command, Cron } from '../models';
-import { CommandActionType } from '../types';
+import { CONFIG } from '../utils/Config';
+import { Command } from '../models/Command';
+import { Cron } from '../models/Cron';
+import { CommandActionType } from '../types/Command';
 
 export const TriviaCommand: CommandActionType<ITriviaCommand> = {
   defaultConfig: {

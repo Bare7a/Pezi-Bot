@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-import { App } from '../utils';
+import { App } from '../utils/App';
 
 (async () => {
   const isDirExist = async (path: string) =>
