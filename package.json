@@ -20,6 +20,7 @@
   "scripts": {
     "export": "npm run export -w @pezi-bot/bot",
     "import": "npm run import -w @pezi-bot/bot",
+    "build:db": "npm run build -w @pezi-bot/db",
     "dev:bot": "npm run dev -w @pezi-bot/bot",
     "build:bot": "npm run build -w @pezi-bot/bot",
     "start:bot": "npm run start -w @pezi-bot/bot",
@@ -29,7 +30,6 @@
   },
   "dependencies": {
     "@pezi-bot/bot": "^1.0.2",
-    "@pezi-bot/db": "^1.0.2",
-    "@pezi-bot/web": "^1.0.2"
+    "@pezi-bot/db": "^1.0.2"
   }
 }
