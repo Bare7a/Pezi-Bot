@@ -27,9 +27,5 @@
     "dev:web": "npm run dev -w @pezi-bot/web",
     "build:web": "npm run build -w @pezi-bot/web",
     "start:web": "npm run start -w @pezi-bot/web"
-  },
-  "dependencies": {
-    "@pezi-bot/bot": "^1.0.2",
-    "@pezi-bot/db": "^1.0.2"
   }
 }
