@@ -1,9 +1,8 @@
 import NodeCron from 'node-cron';
-import Sequelize from '@sequelize/core';
 import { ChatUserstate } from 'tmi.js';
 import { ICommand } from '@pezi-bot/db';
 
-import { CONFIG } from './Config';
+import { CONFIG, SEQUELIZE_DB_CONFIG, SEQUELIZE_LOG_CONFIG } from './Config';
 import { TwitchClient } from './Bot';
 
 import { Command } from '../models/Command';
@@ -31,6 +30,9 @@ import { TriviaCron } from '../crons/Trivia';
 export type DbConnection = { Command: typeof Command; Cron: typeof Cron; User: typeof User; Log: typeof Log };
 export abstract class App {
   private static isStarted = false;
+  private static isDbSynced = false;
+  private static isBotStarted = false;
+  private static isCronStarted = false;
 
   static db: DbConnection = { Command, Cron, User, Log };
   static bot: TwitchClient = new TwitchClient({ identity: CONFIG, channels: [CONFIG.streamer] }, CONFIG);
@@ -38,10 +40,24 @@ export abstract class App {
   static async start() {
     if (App.isStarted) return true;
     App.isStarted = true;
-    const { Command, Cron, User } = App.db;
 
-    Promise.all([await App.loadDb(), App.loadBot()]);
-    await App.syncDb();
+    await Promise.all([App.syncDb(), App.loadBot(), App.loadCrons()]);
+    return App.isStarted;
+  }
+
+  static async syncDb() {
+    if (App.isDbSynced) return App.db;
+    App.isDbSynced = true;
+
+    await Promise.all([SEQUELIZE_DB_CONFIG.sync(), SEQUELIZE_LOG_CONFIG.sync]);
+    return App.db;
+  }
+
+  static async loadBot() {
+    if (App.isBotStarted) return App.bot;
+    App.isBotStarted = true;
+
+    await App.bot.start();
 
     App.bot.on('message', async (_, userstate: ChatUserstate, message: string): Promise<boolean> => {
       try {
@@ -73,6 +89,13 @@ export abstract class App {
       }
     });
 
+    return App.bot;
+  }
+
+  static async loadCrons() {
+    if (App.isCronStarted) return App.isCronStarted;
+    App.isCronStarted = true;
+
     await Cron.resetExecution();
     const cronJobs = [StatusCron, RewardCron, TriviaCron, RaffleCron];
     NodeCron.schedule(
@@ -80,66 +103,7 @@ export abstract class App {
       async () => await Promise.all(cronJobs.map((cronJob) => cronJob.execute(App.bot)))
     );
 
-    return true;
-  }
-
-  static async loadDb() {
-    const { Command, Cron, User, Log } = App.db;
-
-    const sequelizeDb = new Sequelize({
-      logging: false,
-      dialect: 'sqlite',
-      storage: CONFIG.dbPath,
-    });
-    User.init(User.defaultAttributes, { sequelize: sequelizeDb });
-    Cron.init(Cron.defaultAttributes, { sequelize: sequelizeDb });
-    Command.init(Command.defaultAttributes, { sequelize: sequelizeDb });
-    await sequelizeDb.sync();
-
-    const sequelizeLog = new Sequelize({
-      logging: false,
-      dialect: 'sqlite',
-      storage: CONFIG.logPath,
-    });
-    Log.init(Log.defaultAttributes, { sequelize: sequelizeLog });
-    await sequelizeLog.sync();
-
-    return { Command, Cron, User, Log };
-  }
-
-  static async loadBot() {
-    await App.bot.start();
-    return App.bot;
-  }
-
-  static async syncDb() {
-    const [cronsCount, commandsCount] = await Promise.all([Cron.count(), Command.count()]);
-
-    const commands = [
-      AdminCommand.defaultConfig,
-      CmdCommand.defaultConfig,
-      DiceCommand.defaultConfig,
-      FlipCommand.defaultConfig,
-      MessageCommand.defaultConfig,
-      NoteCommand.defaultConfig,
-      PointsCommand.defaultConfig,
-      RaffleCommand.defaultConfig,
-      SlotCommand.defaultConfig,
-      StatsCommand.defaultConfig,
-      TriviaCommand.defaultConfig,
-    ];
-
-    const crons = [
-      RaffleCron.defaultConfig,
-      RewardCron.defaultConfig,
-      StatusCron.defaultConfig,
-      TriviaCron.defaultConfig,
-    ];
-
-    const promises = [];
-    if (cronsCount === 0) promises.push(Cron.bulkCreate(crons));
-    if (commandsCount === 0) promises.push(Command.bulkCreate(commands));
-    await Promise.all(promises);
+    return App.isCronStarted;
   }
 
   static async execute(command: Command<ICommand>, user: User, params: string[], bot: TwitchClient): Promise<Boolean> {

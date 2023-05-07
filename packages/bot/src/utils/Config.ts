@@ -1,4 +1,5 @@
 import path from 'path';
+import Sequelize from '@sequelize/core';
 import { ConfigType } from '../types/Config';
 import { config } from 'dotenv';
 
@@ -26,7 +27,10 @@ export const CONFIG: ConfigType = {
   webAppUrl: env.bot_web_app_url ?? 'http://localhost:3000',
   webAppPort: Number(env.bot_web_app_port ?? 3000),
   webAppSecret: env.bot_web_app_secret ?? 'NOT_DEFINED',
-};
+} as const;
 
 if (['NOT_DEFINED', -1337].some((invalidValue) => Object.values(CONFIG).includes(invalidValue)))
   throw Error(`The provided .env file has missing values, please update: \n ${JSON.stringify(CONFIG, null, 2)}`);
+
+export const SEQUELIZE_DB_CONFIG = new Sequelize({ logging: false, dialect: 'sqlite', storage: CONFIG.dbPath });
+export const SEQUELIZE_LOG_CONFIG = new Sequelize({ logging: false, dialect: 'sqlite', storage: CONFIG.logPath });

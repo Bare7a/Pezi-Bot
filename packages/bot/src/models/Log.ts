@@ -1,4 +1,5 @@
 import { Log as DBLog } from '@pezi-bot/db';
+import { SEQUELIZE_LOG_CONFIG } from '../utils/Config';
 
 export class Log extends DBLog {
   static async reset() {
@@ -13,3 +14,5 @@ export class Log extends DBLog {
     return true;
   }
 }
+
+Log.init(Log.defaultAttributes, { sequelize: SEQUELIZE_LOG_CONFIG });

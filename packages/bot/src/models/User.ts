@@ -3,8 +3,8 @@ import { User as DBUser, RewardCronType, UserRoleType, UserType } from '@pezi-bo
 
 import { Cron } from './Cron';
 import { Log } from './Log';
-import { CONFIG } from '../utils/Config';
 import { ValidUserState } from '../types/User';
+import { CONFIG, SEQUELIZE_DB_CONFIG } from '../utils/Config';
 
 export class User extends DBUser {
   static isValidUserState = (account: ChatUserstate): account is ValidUserState => 'display-name' in account;
@@ -126,3 +126,5 @@ export class User extends DBUser {
     return true;
   }
 }
+
+User.init(User.defaultAttributes, { sequelize: SEQUELIZE_DB_CONFIG });

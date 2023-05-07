@@ -1,6 +1,8 @@
 import { WhereAttributeHashValue } from '@sequelize/core';
 import { Cron as DBCron, ICron } from '@pezi-bot/db';
 
+import { SEQUELIZE_DB_CONFIG } from '../utils/Config';
+
 export class Cron<T extends ICron> extends DBCron<T> {
   isExecutePermited(): Boolean {
     const { callAt, isEnabled, isExecuting } = this;
@@ -26,3 +28,5 @@ export class Cron<T extends ICron> extends DBCron<T> {
     await Cron.update({ isExecuting: false }, { where: { isExecuting: true } });
   }
 }
+
+Cron.init(Cron.defaultAttributes, { sequelize: SEQUELIZE_DB_CONFIG });

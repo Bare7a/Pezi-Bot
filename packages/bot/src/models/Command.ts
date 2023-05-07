@@ -4,6 +4,7 @@ import { Command as DBCommand, ICommand, IMessageCommand, StatusCronType } from 
 import { Cron } from './Cron';
 import { User } from './User';
 import { TwitchClient } from '../utils/Bot';
+import { SEQUELIZE_DB_CONFIG } from '../utils/Config';
 
 export class Command<T extends ICommand> extends DBCommand<T> {
   static async fetch<T extends ICommand>(type: WhereAttributeHashValue<T['type']>): Promise<Command<T>> {
@@ -92,3 +93,5 @@ export class Command<T extends ICommand> extends DBCommand<T> {
     return command;
   }
 }
+
+Command.init(Command.defaultAttributes, { sequelize: SEQUELIZE_DB_CONFIG });
