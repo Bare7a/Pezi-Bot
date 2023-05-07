@@ -41,7 +41,10 @@ export abstract class App {
     if (App.isStarted) return true;
     App.isStarted = true;
 
-    await Promise.all([App.loadDb(), App.loadBot(), App.loadCrons()]);
+    await App.loadDb();
+    await App.loadBot();
+    await App.loadCrons();
+
     return App.isStarted;
   }
 
