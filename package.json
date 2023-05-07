@@ -28,6 +28,7 @@
     "build:client": "npm run build -w @pezi-bot/client",
     "build:server": "npm run build -w @pezi-bot/server",
     "start:client": "npm run start -w @pezi-bot/client",
-    "start:server": "npm run start -w @pezi-bot/server"
+    "start:server": "npm run start -w @pezi-bot/server",
+    "build:shared": "npm run build -w @pezi-bot/shared"
   }
 }
