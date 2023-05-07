@@ -53,6 +53,34 @@ export abstract class App {
     App.isDbSynced = true;
 
     await Promise.all([SEQUELIZE_DB_CONFIG.sync(), SEQUELIZE_LOG_CONFIG.sync]);
+    const [cronsCount, commandsCount] = await Promise.all([Cron.count(), Command.count()]);
+
+    const commands = [
+      AdminCommand.defaultConfig,
+      CmdCommand.defaultConfig,
+      DiceCommand.defaultConfig,
+      FlipCommand.defaultConfig,
+      MessageCommand.defaultConfig,
+      NoteCommand.defaultConfig,
+      PointsCommand.defaultConfig,
+      RaffleCommand.defaultConfig,
+      SlotCommand.defaultConfig,
+      StatsCommand.defaultConfig,
+      TriviaCommand.defaultConfig,
+    ];
+
+    const crons = [
+      RaffleCron.defaultConfig,
+      RewardCron.defaultConfig,
+      StatusCron.defaultConfig,
+      TriviaCron.defaultConfig,
+    ];
+
+    const promises = [];
+    if (cronsCount === 0) promises.push(Cron.bulkCreate(crons));
+    if (commandsCount === 0) promises.push(Command.bulkCreate(commands));
+    await Promise.all(promises);
+
     return App.db;
   }
 
