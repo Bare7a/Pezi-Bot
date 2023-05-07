@@ -1,2 +1,5 @@
 import { App } from './utils/App';
-App.start();
+
+(async () => {
+  await App.start();
+})();

@@ -1,4 +1,5 @@
-import { CronType, ICron } from '@pezi-bot/db';
+import { CronType, ICron } from '@pezi-bot/shared';
+
 import { Cron } from '../models/Cron';
 import { TwitchClient } from '../utils/Bot';
 

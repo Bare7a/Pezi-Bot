@@ -1,4 +1,4 @@
-import { CommandType, ICommand } from '@pezi-bot/db';
+import { CommandType, ICommand } from '@pezi-bot/shared';
 
 import { Command } from '../models/Command';
 import { User } from '../models/User';
