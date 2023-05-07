@@ -18,14 +18,16 @@
     "packages/*"
   ],
   "scripts": {
-    "export": "npm run export -w @pezi-bot/bot",
-    "import": "npm run import -w @pezi-bot/bot",
-    "build:db": "npm run build -w @pezi-bot/db",
-    "dev:bot": "npm run dev -w @pezi-bot/bot",
-    "build:bot": "npm run build -w @pezi-bot/bot",
-    "start:bot": "npm run start -w @pezi-bot/bot",
-    "dev:web": "npm run dev -w @pezi-bot/web",
-    "build:web": "npm run build -w @pezi-bot/web",
-    "start:web": "npm run start -w @pezi-bot/web"
+    "start": "npm run start:server",
+    "start:no-web": "cross-env bot_web_app_enabled=false npm run start:server",
+    "build": "npm run build:server",
+    "export": "npm run export -w @pezi-bot/server",
+    "import": "npm run import -w @pezi-bot/server",
+    "dev:client": "npm run dev -w @pezi-bot/client",
+    "dev:server": "npm run dev -w @pezi-bot/server",
+    "build:client": "npm run build -w @pezi-bot/client",
+    "build:server": "npm run build -w @pezi-bot/server",
+    "start:client": "npm run start -w @pezi-bot/client",
+    "start:server": "npm run start -w @pezi-bot/server"
   }
 }

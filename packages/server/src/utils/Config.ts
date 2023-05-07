@@ -9,10 +9,10 @@ const envs = {
   env2: config({ path: path.join(dirs.dir2, '.env') }).parsed,
 };
 
-const env = envs.env1 ?? envs.env2;
 const dir = envs.env1 ? dirs.dir1 : dirs.dir2;
-if (!env) throw Error(`Couldn't find an .env file in the current directory`);
+if (!(envs.env1 ?? envs.env2)) throw Error(`Couldn't find an .env file in the current directory`);
 
+const env = process.env;
 export const CONFIG: ConfigType = {
   streamer: env.bot_streamer ?? 'NOT_DEFINED',
   username: env.bot_username ?? 'NOT_DEFINED',
@@ -27,6 +27,7 @@ export const CONFIG: ConfigType = {
   webAppUrl: env.bot_web_app_url ?? 'http://localhost:3000',
   webAppPort: Number(env.bot_web_app_port ?? 3000),
   webAppSecret: env.bot_web_app_secret ?? 'NOT_DEFINED',
+  webAppEnabled: env.bot_web_app_enabled !== 'false',
 } as const;
 
 if (['NOT_DEFINED', -1337].some((invalidValue) => Object.values(CONFIG).includes(invalidValue)))

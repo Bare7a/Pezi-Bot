@@ -12,4 +12,5 @@ export type ConfigType = {
   webAppUrl: string;
   webAppPort: number;
   webAppSecret: string;
+  webAppEnabled: boolean;
 };
