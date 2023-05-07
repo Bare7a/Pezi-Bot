@@ -41,11 +41,11 @@ export abstract class App {
     if (App.isStarted) return true;
     App.isStarted = true;
 
-    await Promise.all([App.syncDb(), App.loadBot(), App.loadCrons()]);
+    await Promise.all([App.loadDb(), App.loadBot(), App.loadCrons()]);
     return App.isStarted;
   }
 
-  static async syncDb() {
+  static async loadDb() {
     if (App.isDbSynced) return App.db;
     App.isDbSynced = true;
 
