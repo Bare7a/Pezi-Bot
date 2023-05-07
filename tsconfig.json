@@ -1,4 +1,4 @@
 {
   "files": [],
-  "references": [{ "path": "./packages/bot" }, { "path": "./packages/db" }]
+  "references": [{ "path": "./packages/api" }, { "path": "./packages/server" }, { "path": "./packages/shared" }]
 }
