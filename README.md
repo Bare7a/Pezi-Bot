@@ -6,7 +6,7 @@ Welcome to **Pezi Bot**, the ultimate chatbot for your Twitch channel! **Pezi Bo
 
 # Installation
 
-1. Install Bun
+1. Install [Bun](https://bun.sh/docs/installation)
 2. Create an `.env` file into the root directory of the project consisting:
 
 ```bash
@@ -25,7 +25,7 @@ bot_default_points="100"
 - **bot_currency_name** - Name of the currency that the bot will use
 - **bot_default_points** - Initial points that the new users will start with
 
-You can use: https://twitchtokengenerator.com/ for **bot_client_id** and **bot_access_token**
+You can use: [Twitch Token Generator](https://twitchtokengenerator.com/) for **bot_client_id** and **bot_access_token**
 
 3. Run `bun start`
 
