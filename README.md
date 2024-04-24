@@ -13,7 +13,7 @@ Welcome to **Pezi Bot**, the ultimate chatbot for your Twitch channel! **Pezi Bo
 bot_streamer="bare7a"
 bot_username="pezi_bot"
 bot_client_id="ab123cdefghijklmn4o567pq8st9u"
-bot_refresh_token="1abcdefghijklmnopqr23stuvw4xy4"
+bot_access_token="1abcdefghijklmnopqr23stuvw4xy4"
 bot_currency_name="points"
 bot_default_points="100"
 ```
@@ -21,7 +21,7 @@ bot_default_points="100"
 - **bot_streamer** - Username of the streamer of which the bot will be running in
 - **bot_username** - Bot's username
 - **bot_client_id** - Id of the bot
-- **bot_refresh_token** - Access token for calling the API's
+- **bot_access_token** - Access token for calling the API's
 - **bot_currency_name** - Name of the currency that the bot will use
 - **bot_default_points** - Initial points that the new users will start with
 
