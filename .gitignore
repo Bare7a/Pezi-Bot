@@ -1,3 +1,7 @@
+# Database
+bin
+db.sqlite
+
 # Logs
 logs
 *.log
