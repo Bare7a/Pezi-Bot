@@ -1,5 +1,5 @@
-import { Log, DbLog, LogTable } from '../types/models';
-import { DatabaseConnection, LogActions } from '../types/utils';
+import { LogTable, Log, DbLog } from '../types/models/Log';
+import { LogActions, DatabaseConnection } from '../types/utils/DB';
 
 export class LogEntity implements LogActions {
   constructor(private dbConn: DatabaseConnection) {}

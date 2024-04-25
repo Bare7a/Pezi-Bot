@@ -1,6 +1,6 @@
 import { env } from '../utils/Config';
-import { ISlotCommand, Command } from '../types/models';
-import { CommandActionType, isSlotCommand } from '../types/utils';
+import { ISlotCommand, Command } from '../types/models/Command';
+import { CommandActionType, isSlotCommand } from '../types/utils/DB';
 
 export const SlotCommand: CommandActionType<ISlotCommand> = {
   isValid: (command): command is Command<ISlotCommand> => isSlotCommand(command),

@@ -1,6 +1,8 @@
 import { env } from '../utils/Config';
-import { CronActionType, isTriviaCron, DbActions, TwitchActions } from '../types/utils';
-import { TriviaCronType, Cron, ICron, ITriviaCommand, StatusCronType } from '../types/models';
+import { TwitchActions } from '../types/utils/Twitch';
+import { ITriviaCommand } from '../types/models/Command';
+import { CronActionType, isTriviaCron, DbActions } from '../types/utils/DB';
+import { TriviaCronType, Cron, ICron, StatusCronType } from '../types/models/Cron';
 
 export const TriviaCron: CronActionType<TriviaCronType> = {
   isValid: (cron: Cron<ICron>): cron is Cron<TriviaCronType> => isTriviaCron(cron),

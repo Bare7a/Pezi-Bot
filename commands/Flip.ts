@@ -1,6 +1,6 @@
 import { env } from '../utils/Config';
-import { IFlipCommand, Command } from '../types/models';
-import { CommandActionType, isFlipCommand } from '../types/utils';
+import { IFlipCommand, Command } from '../types/models/Command';
+import { CommandActionType, isFlipCommand } from '../types/utils/DB';
 
 export const FlipCommand: CommandActionType<IFlipCommand> = {
   isValid: (command): command is Command<IFlipCommand> => isFlipCommand(command),

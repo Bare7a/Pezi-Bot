@@ -1,6 +1,6 @@
+import { IDiceCommand, Command } from '../types/models/Command';
+import { CommandActionType, isDiceCommand } from '../types/utils/DB';
 import { env } from '../utils/Config';
-import { IDiceCommand, Command } from '../types/models';
-import { CommandActionType, isDiceCommand } from '../types/utils';
 
 export const DiceCommand: CommandActionType<IDiceCommand> = {
   isValid: (command): command is Command<IDiceCommand> => isDiceCommand(command),

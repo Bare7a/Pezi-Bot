@@ -1,5 +1,5 @@
-import { CronActions, DatabaseConnection } from '../types/utils';
-import { ICron, CronType, Cron, DbCron, CronTable } from '../types/models';
+import { CronActions, DatabaseConnection } from '../types/utils/DB';
+import { ICron, CronTable, CronType, Cron, DbCron } from '../types/models/Cron';
 
 export class CronEntity implements CronActions {
   constructor(private dbConn: DatabaseConnection) {}

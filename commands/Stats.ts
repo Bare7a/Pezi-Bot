@@ -1,6 +1,6 @@
 import { env } from '../utils/Config';
-import { IStatsCommand, Command } from '../types/models';
-import { CommandActionType, isStatsCommand } from '../types/utils';
+import { IStatsCommand, Command } from '../types/models/Command';
+import { CommandActionType, isStatsCommand } from '../types/utils/DB';
 
 export const StatsCommand: CommandActionType<IStatsCommand> = {
   isValid: (command): command is Command<IStatsCommand> => isStatsCommand(command),

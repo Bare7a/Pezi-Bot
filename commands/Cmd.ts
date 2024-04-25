@@ -1,5 +1,5 @@
-import { ICmdCommand, Command } from '../types/models';
-import { CommandActionType, isCmdCommand } from '../types/utils';
+import { ICmdCommand, Command } from '../types/models/Command';
+import { CommandActionType, isCmdCommand } from '../types/utils/DB';
 
 export const CmdCommand: CommandActionType<ICmdCommand> = {
   isValid: (command): command is Command<ICmdCommand> => isCmdCommand(command),

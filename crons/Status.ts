@@ -1,5 +1,6 @@
-import { StatusCronType, Cron, ICron } from '../types/models';
-import { CronActionType, DbActions, TwitchActions, isStatusCron } from '../types/utils';
+import { TwitchActions } from '../types/utils/Twitch';
+import { StatusCronType, Cron, ICron } from '../types/models/Cron';
+import { CronActionType, isStatusCron, DbActions } from '../types/utils/DB';
 
 export const StatusCron: CronActionType<StatusCronType> = {
   isValid: (cron: Cron<ICron>): cron is Cron<StatusCronType> => isStatusCron(cron),

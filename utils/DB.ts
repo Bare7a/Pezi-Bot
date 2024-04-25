@@ -1,21 +1,44 @@
 import Database from 'bun:sqlite';
-import { LogEntity, CronEntity, UserEntity, CommandEntity } from '../models';
-import { Table, TableColumns, TableColumnNames } from '../types/utils';
-import { QueryOptions, DatabaseConnection, OmitNonNumbers } from '../types/utils';
-import { RaffleCron, RewardCron, StatusCron, TriviaCron } from '../crons';
-import { Command, CommandTable, Cron, CronTable, ICommand, ICron } from '../types/models';
-import { AdminCommand, CmdCommand, DiceCommand, FlipCommand, MessageCommand } from '../commands';
-import { NoteCommand, PointsCommand, RaffleCommand, SlotCommand, StatsCommand, TriviaCommand } from '../commands';
+import { AdminCommand } from '../commands/Admin';
+import { CmdCommand } from '../commands/Cmd';
+import { DiceCommand } from '../commands/Dice';
+import { FlipCommand } from '../commands/Flip';
+import { MessageCommand } from '../commands/Message';
+import { NoteCommand } from '../commands/Note';
+import { PointsCommand } from '../commands/Points';
+import { RaffleCommand } from '../commands/Raffle';
+import { SlotCommand } from '../commands/Slot';
+import { StatsCommand } from '../commands/Stats';
+import { TriviaCommand } from '../commands/Trivia';
+import { RaffleCron } from '../crons/Raffle';
+import { RewardCron } from '../crons/Reward';
+import { StatusCron } from '../crons/Status';
+import { TriviaCron } from '../crons/Trivia';
+import { CommandEntity } from '../models/Command';
+import { CronEntity } from '../models/Cron';
+import { LogEntity } from '../models/Log';
+import { UserEntity } from '../models/User';
+import { Command, ICommand, CommandTable } from '../types/models/Command';
+import { Cron, ICron, CronTable } from '../types/models/Cron';
+import {
+  Table,
+  QueryOptions,
+  TableColumns,
+  TableColumnNames,
+  DatabaseConnection,
+  SqliteType,
+  OmitNonNumbers,
+} from '../types/utils/DB';
 
 const isOneValid = <T>(row: any): row is T => typeof row === 'object' && typeof row.id === 'number';
 
 const isAllValid = <T>(rows: any[]): rows is T[] => Array.isArray(rows) && rows.every((row) => isOneValid(row));
 
 const getWhereClause = <T extends Table>(where?: QueryOptions<T>['where']) => {
-  const eq: Partial<TableColumns<T>> = (where && where.eq) ?? {};
-  const ne: Partial<TableColumns<T>> = (where && where.ne) ?? {};
-  const an: { [K in TableColumnNames<T>]?: T[K][] } = (where && where.an) ?? {};
-  const na: { [K in TableColumnNames<T>]?: T[K][] } = (where && where.na) ?? {};
+  const eq: Partial<TableColumns<T>> = where?.eq ?? {};
+  const ne: Partial<TableColumns<T>> = where?.ne ?? {};
+  const an: { [K in TableColumnNames<T>]?: T[K][] } = where?.an ?? {};
+  const na: { [K in TableColumnNames<T>]?: T[K][] } = where?.na ?? {};
 
   const eqEnt = Object.entries(eq);
   const neEnt = Object.entries(ne);
@@ -154,10 +177,6 @@ CREATE TABLE IF NOT EXISTS logs (
 `;
 
 export class SqliteConnection extends Database implements DatabaseConnection {
-  constructor(filename: string, options: Record<string, string | boolean>) {
-    super(filename, options);
-  }
-
   private parseCommand = (
     dateNow: string,
     command: Omit<Command<ICommand>, 'id' | 'createdAt' | 'updatedAt'>
@@ -257,7 +276,7 @@ export class SqliteConnection extends Database implements DatabaseConnection {
     const values = [];
     const valuesArr = [];
     for (const row of data) {
-      const currentValues: (string | number | boolean)[] = Object.values(row);
+      const currentValues: SqliteType[] = Object.values(row);
       values.push(...currentValues);
 
       const placeholders = `${keys.map(() => '?').join(',')}`;

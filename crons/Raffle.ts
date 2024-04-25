@@ -1,6 +1,8 @@
 import { env } from '../utils/Config';
-import { CronActionType, DbActions, TwitchActions, isStatusCron } from '../types/utils';
-import { RaffleCronType, Cron, ICron, IRaffleCommand, StatusCronType } from '../types/models';
+import { TwitchActions } from '../types/utils/Twitch';
+import { IRaffleCommand } from '../types/models/Command';
+import { CronActionType, isStatusCron, DbActions } from '../types/utils/DB';
+import { RaffleCronType, Cron, ICron, StatusCronType } from '../types/models/Cron';
 
 export const RaffleCron: CronActionType<RaffleCronType> = {
   isValid: (cron: Cron<ICron>): cron is Cron<RaffleCronType> => isStatusCron(cron),

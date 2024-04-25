@@ -1,6 +1,8 @@
-import { RewardCronType, Log, RewardType, StatusCronType } from '../types/models';
-import { User, UserRoleType, UserRoleMapType, Cron, ICron } from '../types/models';
-import { DbActions, CronActionType, isRewardCron, TwitchActions } from '../types/utils';
+import { Log } from '../types/models/Log';
+import { TwitchActions } from '../types/utils/Twitch';
+import { UserRoleType, User } from '../types/models/User';
+import { DbActions, CronActionType, isRewardCron } from '../types/utils/DB';
+import { Cron, RewardCronType, UserRoleMapType, RewardType, ICron, StatusCronType } from '../types/models/Cron';
 
 const getUserRoleMap = () => {
   const userRoleMap = new Map<UserRoleType, User[]>();

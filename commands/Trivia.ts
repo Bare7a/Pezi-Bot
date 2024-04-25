@@ -1,7 +1,7 @@
 import { env } from '../utils/Config';
-import { TriviaCronType } from '../types/models';
-import { ITriviaCommand, Command } from '../types/models';
-import { CommandActionType, isTriviaCommand } from '../types/utils';
+import { TriviaCronType } from '../types/models/Cron';
+import { ITriviaCommand, Command } from '../types/models/Command';
+import { CommandActionType, isTriviaCommand } from '../types/utils/DB';
 
 export const TriviaCommand: CommandActionType<ITriviaCommand> = {
   isValid: (command): command is Command<ITriviaCommand> => isTriviaCommand(command),

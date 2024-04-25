@@ -1,9 +1,27 @@
 import { TwitchActions, UserMessage } from './Twitch';
-import { CronTable, LogTable, CommandType, commandType, UserRoleType } from '../models';
-import { User, UserTable, Log, Cron, ICron, Command, ICommand, CommandTable } from '../models';
-import { IAdminCommand, ICmdCommand, IMessageCommand, INoteCommand, IFlipCommand } from '../models';
-import { IDiceCommand, IRaffleCommand, ISlotCommand, IStatsCommand, ITriviaCommand } from '../models';
-import { IPointsCommand, RaffleCronType, RewardCronType, StatusCronType, TriviaCronType } from '../models';
+import { LogTable, Log } from '../models/Log';
+import { UserTable, User, UserRoleType } from '../models/User';
+import { CronTable, ICron, Cron, RaffleCronType, RewardCronType, StatusCronType, TriviaCronType } from '../models/Cron';
+import {
+  CommandTable,
+  CommandType,
+  commandType,
+  ICommand,
+  Command,
+  IMessageCommand,
+  IAdminCommand,
+  ICmdCommand,
+  INoteCommand,
+  IFlipCommand,
+  IDiceCommand,
+  IRaffleCommand,
+  ISlotCommand,
+  IStatsCommand,
+  ITriviaCommand,
+  IPointsCommand,
+} from '../models/Command';
+
+export type SqliteType = string | number | boolean;
 
 export type Table = UserTable | CommandTable | CronTable | LogTable;
 
@@ -21,7 +39,7 @@ export type QueryOptions<T extends Table> = {
   limit?: number;
 };
 
-export type NonNumberProps<T> = { [K in keyof T]: T[K] extends Number ? never : K }[keyof T];
+export type NonNumberProps<T> = { [K in keyof T]: T[K] extends number ? never : K }[keyof T];
 export type OmitNonNumbers<T> = Omit<T, NonNumberProps<T>>;
 
 export interface DatabaseConnection {

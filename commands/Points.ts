@@ -1,6 +1,6 @@
 import { env } from '../utils/Config';
-import { IPointsCommand, Command } from '../types/models';
-import { CommandActionType, isPointsCommand } from '../types/utils';
+import { IPointsCommand, Command } from '../types/models/Command';
+import { CommandActionType, isPointsCommand } from '../types/utils/DB';
 
 export const PointsCommand: CommandActionType<IPointsCommand> = {
   isValid: (command): command is Command<IPointsCommand> => isPointsCommand(command),
@@ -46,7 +46,7 @@ export const PointsCommand: CommandActionType<IPointsCommand> = {
     }
 
     const pointsMessage = command.opts.pointsMessages
-      .sort((a, b) => b.minPoints - a.minPoints)
+      .toSorted((a, b) => b.minPoints - a.minPoints)
       .find((pm) => points >= pm.minPoints);
 
     if (pointsMessage) {

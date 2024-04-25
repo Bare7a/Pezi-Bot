@@ -1,6 +1,7 @@
 import { env } from '../utils/Config';
-import { CommandActionType, isRaffleCommand } from '../types/utils';
-import { RaffleCronType, IRaffleCommand, Command } from '../types/models';
+import { IRaffleCommand, Command } from '../types/models/Command';
+import { RaffleCronType } from '../types/models/Cron';
+import { CommandActionType, isRaffleCommand } from '../types/utils/DB';
 
 export const RaffleCommand: CommandActionType<IRaffleCommand> = {
   isValid: (command): command is Command<IRaffleCommand> => isRaffleCommand(command),

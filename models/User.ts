@@ -1,8 +1,10 @@
 import { env } from '../utils/Config';
 import { LogEntity } from './Log';
 import { CronEntity } from './Cron';
-import { UserActions, DatabaseConnection, UserMessage } from '../types/utils';
-import { DbUser, User, UserTable, RewardCronType, UserRoleType } from '../types/models';
+import { UserMessage } from '../types/utils/Twitch';
+import { RewardCronType } from '../types/models/Cron';
+import { UserActions, DatabaseConnection } from '../types/utils/DB';
+import { DbUser, User, UserTable, UserRoleType } from '../types/models/User';
 
 export class UserEntity implements UserActions {
   constructor(private dbConn: DatabaseConnection) {}

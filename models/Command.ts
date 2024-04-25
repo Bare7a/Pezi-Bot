@@ -1,8 +1,19 @@
-import { ICommand, CommandTable, Command, UserRoleType } from '../types/models';
-import { DbCommand, User, StatusCronType, IMessageCommand } from '../types/models';
-import { CommandActions, DatabaseConnection, toCommandType, DbActions, TwitchActions } from '../types/utils';
-import { AdminCommand, CmdCommand, DiceCommand, FlipCommand, MessageCommand } from '../commands';
-import { NoteCommand, PointsCommand, RaffleCommand, SlotCommand, StatsCommand, TriviaCommand } from '../commands';
+import { AdminCommand } from '../commands/Admin';
+import { CmdCommand } from '../commands/Cmd';
+import { DiceCommand } from '../commands/Dice';
+import { FlipCommand } from '../commands/Flip';
+import { MessageCommand } from '../commands/Message';
+import { NoteCommand } from '../commands/Note';
+import { PointsCommand } from '../commands/Points';
+import { RaffleCommand } from '../commands/Raffle';
+import { SlotCommand } from '../commands/Slot';
+import { StatsCommand } from '../commands/Stats';
+import { TriviaCommand } from '../commands/Trivia';
+import { StatusCronType } from '../types/models/Cron';
+import { UserRoleType, User } from '../types/models/User';
+import { TwitchActions } from '../types/utils/Twitch';
+import { CommandActions, DatabaseConnection, toCommandType, DbActions } from '../types/utils/DB';
+import { ICommand, CommandTable, Command, DbCommand, IMessageCommand } from '../types/models/Command';
 
 export class CommandEntity implements CommandActions {
   constructor(private dbConn: DatabaseConnection) {}

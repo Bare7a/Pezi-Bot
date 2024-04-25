@@ -1,5 +1,5 @@
-import { IAdminCommand, Command } from '../types/models';
-import { CommandActionType, isAdminCommand } from '../types/utils';
+import { IAdminCommand, Command } from '../types/models/Command';
+import { CommandActionType, isAdminCommand } from '../types/utils/DB';
 
 export const AdminCommand: CommandActionType<IAdminCommand> = {
   isValid: (command): command is Command<IAdminCommand> => isAdminCommand(command),

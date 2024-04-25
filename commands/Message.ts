@@ -1,5 +1,5 @@
-import { IMessageCommand, Command } from '../types/models';
-import { CommandActionType, isMessageCommand } from '../types/utils';
+import { IMessageCommand, Command } from '../types/models/Command';
+import { CommandActionType, isMessageCommand } from '../types/utils/DB';
 
 export const MessageCommand: CommandActionType<IMessageCommand> = {
   isValid: (command): command is Command<IMessageCommand> => isMessageCommand(command),

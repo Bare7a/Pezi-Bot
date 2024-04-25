@@ -1,5 +1,6 @@
 import { env } from './Config';
-import { TwitchActions, UserMessage, TwitchIds, ApiTwitchIds, ApiTwitchStatus, ApiViewersIds } from '../types/utils';
+import { TwitchActions, UserMessage } from '../types/utils/Twitch';
+import { TwitchIds, ApiTwitchIds, ApiTwitchStatus, ApiViewersIds } from '../types/utils/Api';
 
 export class TwitchClient implements TwitchActions {
   private twitchIds: TwitchIds = null;
@@ -62,8 +63,8 @@ export class TwitchClient implements TwitchActions {
       const uMsg = message.slice(userTypeIdx + 10);
       if (!uMsg || !meta) return null;
 
-      const msg = uMsg.match(/:([^!]*)![^:]*:(.*)/);
-      if (!msg || !msg[1] || !msg[2]) return null;
+      const msg = new RegExp(/:([^!]*)![^:]*:(.*)/).exec(uMsg);
+      if (!msg?.[1] || !msg?.[2]) return null;
 
       const keyValues = meta.split(';');
       const map: Record<string, string> = {};

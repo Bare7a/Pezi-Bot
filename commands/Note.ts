@@ -1,6 +1,6 @@
 import { MessageCommand } from './Message';
-import { INoteCommand, Command } from '../types/models';
-import { CommandActionType, isNoteCommand } from '../types/utils';
+import { INoteCommand, Command } from '../types/models/Command';
+import { CommandActionType, isNoteCommand } from '../types/utils/DB';
 
 export const NoteCommand: CommandActionType<INoteCommand> = {
   isValid: (command): command is Command<INoteCommand> => isNoteCommand(command),
