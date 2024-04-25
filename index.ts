@@ -39,7 +39,7 @@ socket.addEventListener('message', (event) => {
     if (!userCanExecute) return false;
 
     const isExecutedSuccesfully = db.Command.execute(command, user, params, db, bot);
-    if (isExecutedSuccesfully) db.Command.addCooldowns(command, user, db);
+    if (isExecutedSuccesfully) db.Command.addCooldowns(command, user);
 
     return true;
   } catch (ex) {

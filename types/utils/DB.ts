@@ -95,7 +95,7 @@ export interface CommandActions {
   update<T extends ICommand>(command: Command<T>): Command<T>;
   deleteById(id: number): void;
   canUserExecute(command: Command<ICommand>, user: User, db: DbActions, bot: TwitchActions): boolean;
-  addCooldowns(command: Command<ICommand>, user: User, db: DbActions): void;
+  addCooldowns(command: Command<ICommand>, user: User): void;
   createNewMessage(name: string, message: string): Command<IMessageCommand>;
   execute(command: Command<ICommand>, user: User, params: string[], db: DbActions, bot: TwitchActions): boolean;
   getCost(command: Command<ICommand>, customCost: string, user: User): number;

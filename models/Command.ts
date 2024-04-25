@@ -10,8 +10,8 @@ import { SlotCommand } from '../commands/Slot';
 import { StatsCommand } from '../commands/Stats';
 import { TriviaCommand } from '../commands/Trivia';
 import { StatusCronType } from '../types/models/Cron';
-import { UserRoleType, User } from '../types/models/User';
 import { TwitchActions } from '../types/utils/Twitch';
+import { UserRoleType, User, UserTable } from '../types/models/User';
 import { CommandActions, DatabaseConnection, toCommandType, DbActions } from '../types/utils/DB';
 import { ICommand, CommandTable, Command, DbCommand, IMessageCommand } from '../types/models/Command';
 
@@ -105,14 +105,15 @@ export class CommandEntity implements CommandActions {
     return isCommandExecutable;
   }
 
-  public addCooldowns(command: Command<ICommand>, user: User, db: DbActions): void {
+  public addCooldowns(command: Command<ICommand>, user: User): void {
     const currentTime = new Date();
 
-    command.lastCalledAt = currentTime;
     user.commands[command.type] = currentTime;
+    const commands = JSON.stringify(user.commands);
+    const lastCalledAt = currentTime.toISOString();
 
-    db.User.update(user);
-    db.Command.update(command);
+    this.dbConn.updateOne<UserTable>('Users', { commands }, { eq: { id: user.id } });
+    this.dbConn.updateOne<CommandTable>('Commands', { lastCalledAt }, { eq: { id: command.id } });
   }
 
   public getCost(command: Command<ICommand>, customCost: string, user: User): number {
