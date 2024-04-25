@@ -12,7 +12,7 @@ export const PointsCommand: CommandActionType<IPointsCommand> = {
     const currencyName = env.botCurrencyName;
 
     if (user.isAdmin && username && value && ['add', 'set', 'remove'].includes(modifier)) {
-      const userId = username.replace('@', '').toLowerCase();
+      const userId = username.replace('@', '');
       const target = db.User.getByUsername(userId);
       if (!target) return false;
 
