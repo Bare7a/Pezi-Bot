@@ -13,7 +13,7 @@ export const PointsCommand: CommandActionType<IPointsCommand> = {
 
     if (user.isAdmin && username && value && ['add', 'set', 'remove'].includes(modifier)) {
       const userId = username.replace('@', '').toLowerCase();
-      const target = db.User.getById(userId);
+      const target = db.User.getByUsername(userId);
       if (!target) return false;
 
       const Log = command.isLogEnabled ? db.Log : undefined;

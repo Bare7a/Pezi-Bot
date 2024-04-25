@@ -171,6 +171,7 @@ export interface UserActions {
   getRole(user: User): UserRoleType;
   getById(userId: string): User | null;
   getByIds(userIds: string[]): User[];
+  getByUsername(username: string): User | null;
   getTopUsers(): User[];
   addAsChatter(user: User, Cron: CronActions): boolean;
   addPoints(user: User, cost: number, points: number, type: string, Log?: LogActions): boolean;

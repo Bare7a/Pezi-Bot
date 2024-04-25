@@ -8,7 +8,7 @@ export const AdminCommand: CommandActionType<IAdminCommand> = {
     if (!modifier || !username) return false;
 
     const userId = username.replace('@', '').toLowerCase();
-    const target = db.User.getById(userId);
+    const target = db.User.getByUsername(userId);
     if (!target) return false;
 
     let message;

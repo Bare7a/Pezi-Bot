@@ -50,6 +50,14 @@ export class UserEntity implements UserActions {
     return users;
   };
 
+  public getByUsername = (username: string): User | null => {
+    const userDb = this.dbConn.getOne<UserTable>('Users', { where: { eq: { username } } });
+    if (!userDb) return null;
+
+    const user = this.parse(userDb);
+    return user;
+  };
+
   private insert = (newUser: UserMessage): User => {
     const userDb = this.dbConn.insertOne<UserTable>('Users', {
       userId: newUser.userId,
