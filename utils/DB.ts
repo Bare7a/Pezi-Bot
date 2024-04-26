@@ -26,7 +26,7 @@ import {
   TableColumns,
   TableColumnNames,
   DatabaseConnection,
-  SqliteType,
+  SqliteColumn,
   OmitNonNumbers,
 } from '../types/utils/DB';
 
@@ -55,7 +55,7 @@ const getWhereClause = <T extends Table>(where?: QueryOptions<T>['where']) => {
   ].join(' AND ');
 
   const whereString = `WHERE ${whereText}`;
-  const whereValues: (string | number | boolean)[] = [
+  const whereValues: SqliteColumn[] = [
     ...Object.values(eq),
     ...Object.values(ne),
     ...Object.values(an).flatMap((value) => value),
@@ -82,7 +82,7 @@ const getSetClause = <T extends TableColumns<Table>>(data: Partial<T>) => {
     .join(',');
 
   const setString = `SET ${setText}`;
-  const setValues: (string | number | boolean)[] = Object.values(data);
+  const setValues: SqliteColumn[] = Object.values(data);
 
   return { setValues, setString };
 };
@@ -93,7 +93,7 @@ const getCustomSetClause = <T extends TableColumns<Table>>(data: Partial<T>, ope
     .join(',');
 
   const setString = `SET ${setText}`;
-  const setValues: (string | number | boolean)[] = Object.values(data);
+  const setValues: SqliteColumn[] = Object.values(data);
 
   return { setValues, setString };
 };
@@ -276,7 +276,7 @@ export class SqliteConnection extends Database implements DatabaseConnection {
     const values = [];
     const valuesArr = [];
     for (const row of data) {
-      const currentValues: SqliteType[] = Object.values(row);
+      const currentValues: SqliteColumn[] = Object.values(row);
       values.push(...currentValues);
 
       const placeholders = `${keys.map(() => '?').join(',')}`;

@@ -21,7 +21,7 @@ import {
   IPointsCommand,
 } from '../models/Command';
 
-export type SqliteType = string | number | boolean;
+export type SqliteColumn = string | number | boolean;
 
 export type Table = UserTable | CommandTable | CronTable | LogTable;
 
