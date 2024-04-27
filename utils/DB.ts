@@ -37,11 +37,19 @@ const isAllValid = <T>(rows: any[]): rows is T[] => Array.isArray(rows) && rows.
 const getWhereClause = <T extends Table>(where?: QueryOptions<T>['where']) => {
   const eq: Partial<TableColumns<T>> = where?.eq ?? {};
   const ne: Partial<TableColumns<T>> = where?.ne ?? {};
+  const gt: Partial<TableColumns<T>> = where?.gt ?? {};
+  const lt: Partial<TableColumns<T>> = where?.lt ?? {};
+  const gte: Partial<TableColumns<T>> = where?.gte ?? {};
+  const lte: Partial<TableColumns<T>> = where?.lte ?? {};
   const an: { [K in TableColumnNames<T>]?: T[K][] } = where?.an ?? {};
   const na: { [K in TableColumnNames<T>]?: T[K][] } = where?.na ?? {};
 
   const eqEnt = Object.entries(eq);
   const neEnt = Object.entries(ne);
+  const gtEnt = Object.entries(gt);
+  const ltEnt = Object.entries(lt);
+  const gteEnt = Object.entries(gte);
+  const lteEnt = Object.entries(lte);
   const anEnt = Object.entries(an);
   const naEnt = Object.entries(na);
 
@@ -50,6 +58,10 @@ const getWhereClause = <T extends Table>(where?: QueryOptions<T>['where']) => {
   const whereText = [
     ...eqEnt.map(([key]) => `${key} = ?`),
     ...neEnt.map(([key]) => `${key} <> ?`),
+    ...gtEnt.map(([key]) => `${key} > ?`),
+    ...ltEnt.map(([key]) => `${key} < ?`),
+    ...gteEnt.map(([key]) => `${key} >= ?`),
+    ...lteEnt.map(([key]) => `${key} <= ?`),
     ...anEnt.map(([key, value]) => `${key} IN (${Array(value.length).fill('?').join(',')})`),
     ...naEnt.map(([key, value]) => `${key} NOT IN (${Array(value.length).fill('?').join(',')})`),
   ].join(' AND ');
@@ -58,6 +70,10 @@ const getWhereClause = <T extends Table>(where?: QueryOptions<T>['where']) => {
   const whereValues: SqliteColumn[] = [
     ...Object.values(eq),
     ...Object.values(ne),
+    ...Object.values(gt),
+    ...Object.values(lt),
+    ...Object.values(gte),
+    ...Object.values(lte),
     ...Object.values(an).flatMap((value) => value),
     ...Object.values(na).flatMap((value) => value),
   ];

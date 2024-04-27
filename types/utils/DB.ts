@@ -32,6 +32,10 @@ export type QueryOptions<T extends Table> = {
   where?: {
     eq?: Partial<TableColumns<T>>;
     ne?: Partial<TableColumns<T>>;
+    gt?: Partial<TableColumns<T>>;
+    lt?: Partial<TableColumns<T>>;
+    gte?: Partial<TableColumns<T>>;
+    lte?: Partial<TableColumns<T>>;
     an?: { [K in TableColumnNames<T>]?: T[K][] };
     na?: { [K in TableColumnNames<T>]?: T[K][] };
   };
