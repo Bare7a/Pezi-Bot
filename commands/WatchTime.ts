@@ -17,10 +17,9 @@ export const WatchTimeCommand: CommandActionType<IWatchTimeCommand> = {
       .replaceAll('$streamer', streamer)
       .replaceAll('$watchTime', watchTime);
 
-    bot.send(message);
-
     const Log = command.isLogEnabled ? db.Log : undefined;
     db.User.removePoints(user, cost, cost, command.type, Log);
+    bot.send(message);
 
     return true;
   },
