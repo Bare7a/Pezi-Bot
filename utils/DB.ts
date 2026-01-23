@@ -381,7 +381,7 @@ export class SqliteConnection extends Database implements DatabaseConnection {
     where?: QueryOptions<T>['where'],
   ): T | null {
     const row = this.incrementMany(table, data, where)[0];
-    if (isOneValid<T>(row)) return row || null;
+    if (isOneValid<T>(row) || !row) return row || null;
     throw Error(`There was a problem while incrementing one ${table}`);
   }
 
@@ -413,7 +413,7 @@ export class SqliteConnection extends Database implements DatabaseConnection {
     where?: QueryOptions<T>['where'],
   ): T | null {
     const row = this.decrementMany(table, data, where)[0];
-    if (isOneValid<T>(row)) return row || null;
+    if (isOneValid<T>(row) || !row) return row || null;
     throw Error(`There was a problem while decrementing one ${table}`);
   }
 
