@@ -10,10 +10,12 @@ import { RaffleCommand } from '../commands/Raffle';
 import { SlotCommand } from '../commands/Slot';
 import { StatsCommand } from '../commands/Stats';
 import { TriviaCommand } from '../commands/Trivia';
+import { WatchTimeCommand } from '../commands/WatchTime';
 import { RaffleCron } from '../crons/Raffle';
 import { RewardCron } from '../crons/Reward';
 import { StatusCron } from '../crons/Status';
 import { TriviaCron } from '../crons/Trivia';
+import { WatchTimeCron } from '../crons/WatchTime';
 import { CommandEntity } from '../models/Command';
 import { CronEntity } from '../models/Cron';
 import { LogEntity } from '../models/Log';
@@ -142,6 +144,7 @@ CREATE TABLE IF NOT EXISTS users (
   isAdmin BOOLEAN NOT NULL,
   isStreamer BOOLEAN NOT NULL,
   commands JSON NOT NULL,
+  watchTime INTEGER NOT NULL,
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
@@ -195,7 +198,7 @@ CREATE TABLE IF NOT EXISTS logs (
 export class SqliteConnection extends Database implements DatabaseConnection {
   private parseCommand = (
     dateNow: string,
-    command: Omit<Command<ICommand>, 'id' | 'createdAt' | 'updatedAt'>
+    command: Omit<Command<ICommand>, 'id' | 'createdAt' | 'updatedAt'>,
   ): Omit<CommandTable, 'id' | '_name'> => ({
     ...command,
     opts: JSON.stringify(command.opts),
@@ -207,7 +210,7 @@ export class SqliteConnection extends Database implements DatabaseConnection {
 
   private parseCron = (
     dateNow: string,
-    cron: Omit<Cron<ICron>, 'id' | 'createdAt' | 'updatedAt'>
+    cron: Omit<Cron<ICron>, 'id' | 'createdAt' | 'updatedAt'>,
   ): Omit<CronTable, 'id' | '_name'> => ({
     ...cron,
     opts: JSON.stringify(cron.opts),
@@ -235,6 +238,7 @@ export class SqliteConnection extends Database implements DatabaseConnection {
         this.parseCommand(dateNow, SlotCommand.defaultConfig),
         this.parseCommand(dateNow, StatsCommand.defaultConfig),
         this.parseCommand(dateNow, TriviaCommand.defaultConfig),
+        this.parseCommand(dateNow, WatchTimeCommand.defaultConfig),
       ]);
     }
 
@@ -245,6 +249,7 @@ export class SqliteConnection extends Database implements DatabaseConnection {
         this.parseCron(dateNow, RewardCron.defaultConfig),
         this.parseCron(dateNow, StatusCron.defaultConfig),
         this.parseCron(dateNow, TriviaCron.defaultConfig),
+        this.parseCron(dateNow, WatchTimeCron.defaultConfig),
       ]);
     }
   }
@@ -318,7 +323,7 @@ export class SqliteConnection extends Database implements DatabaseConnection {
   public updateMany<T extends Table>(
     table: T['_name'],
     data: Partial<TableColumns<T>>,
-    where?: QueryOptions<T>['where']
+    where?: QueryOptions<T>['where'],
   ): T[] {
     const { setValues, setString } = getSetClause(data);
     if (setValues.length === 0) return [];
@@ -341,7 +346,7 @@ export class SqliteConnection extends Database implements DatabaseConnection {
   public updateOne<T extends Table>(
     table: T['_name'],
     data: Partial<TableColumns<T>>,
-    where?: QueryOptions<T>['where']
+    where?: QueryOptions<T>['where'],
   ): T {
     const row = this.updateMany(table, data, where)[0];
     if (isOneValid<T>(row)) return row;
@@ -351,7 +356,7 @@ export class SqliteConnection extends Database implements DatabaseConnection {
   public incrementMany<T extends Table>(
     table: T['_name'],
     data: Partial<OmitNonNumbers<TableColumns<T>>>,
-    where?: QueryOptions<T>['where']
+    where?: QueryOptions<T>['where'],
   ): T[] {
     const { setValues, setString } = getCustomSetClause(data, '+');
     if (setValues.length === 0) return [];
@@ -373,7 +378,7 @@ export class SqliteConnection extends Database implements DatabaseConnection {
   public incrementOne<T extends Table>(
     table: T['_name'],
     data: Partial<OmitNonNumbers<TableColumns<T>>>,
-    where?: QueryOptions<T>['where']
+    where?: QueryOptions<T>['where'],
   ): T | null {
     const row = this.incrementMany(table, data, where)[0];
     if (isOneValid<T>(row)) return row || null;
@@ -383,7 +388,7 @@ export class SqliteConnection extends Database implements DatabaseConnection {
   public decrementMany<T extends Table>(
     table: T['_name'],
     data: Partial<OmitNonNumbers<TableColumns<T>>>,
-    where?: QueryOptions<T>['where']
+    where?: QueryOptions<T>['where'],
   ): T[] {
     const { setValues, setString } = getCustomSetClause(data, '-');
     if (setValues.length === 0) return [];
@@ -405,7 +410,7 @@ export class SqliteConnection extends Database implements DatabaseConnection {
   public decrementOne<T extends Table>(
     table: T['_name'],
     data: Partial<OmitNonNumbers<TableColumns<T>>>,
-    where?: QueryOptions<T>['where']
+    where?: QueryOptions<T>['where'],
   ): T | null {
     const row = this.decrementMany(table, data, where)[0];
     if (isOneValid<T>(row)) return row || null;

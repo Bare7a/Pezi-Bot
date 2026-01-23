@@ -70,6 +70,7 @@ export class UserEntity implements UserActions {
       isMod: newUser.isMod,
       isAdmin: newUser.isAdmin,
       isStreamer: newUser.isStreamer,
+      watchTime: 0,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
@@ -104,7 +105,7 @@ export class UserEntity implements UserActions {
           isSub: newUser.isSub,
           isVip: newUser.isVip,
         },
-        { eq: { userId: oldUser.userId } }
+        { eq: { userId: oldUser.userId } },
       );
 
       return this.parse(updatedUser);
@@ -180,6 +181,22 @@ export class UserEntity implements UserActions {
     if (!user) return false;
     if (Log) Log.insert(type, user.userId, cost, points, user.points);
     user.points -= points;
+
+    return true;
+  };
+
+  public addWatchTime = (user: User, watchTime: number) => {
+    this.dbConn.incrementOne<UserTable>('Users', { watchTime }, { eq: { userId: user.userId } });
+
+    if (!user) return false;
+    user.watchTime += watchTime;
+
+    return true;
+  };
+
+  public addWatchTimeInBulk = (userIds: string[], watchTime: number) => {
+    const users = this.dbConn.incrementMany<UserTable>('Users', { watchTime }, { an: { userId: userIds } });
+    if (users.length === 0) return false;
 
     return true;
   };

@@ -3,6 +3,7 @@ import { RaffleCron } from './crons/Raffle';
 import { RewardCron } from './crons/Reward';
 import { StatusCron } from './crons/Status';
 import { TriviaCron } from './crons/Trivia';
+import { WatchTimeCron } from './crons/WatchTime';
 import { TwitchClient } from './utils/Twitch';
 import { SqliteConnection, Db } from './utils/DB';
 
@@ -11,7 +12,7 @@ const dbConnection = new SqliteConnection('./db.sqlite', { create: true });
 
 const db = new Db(dbConnection);
 const bot = new TwitchClient(socket);
-const crons = [StatusCron, RewardCron, TriviaCron, RaffleCron];
+const crons = [StatusCron, RewardCron, TriviaCron, RaffleCron, WatchTimeCron];
 
 db.Cron.resetExecution();
 setInterval(() => crons.map(async (cron) => await cron.execute(db, bot)), 1000);

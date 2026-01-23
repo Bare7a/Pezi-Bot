@@ -5,6 +5,7 @@ export type GenericUser = {
   id: number;
   userId: string;
   username: string;
+  watchTime: number;
   points: number;
   color: string;
   isSub: boolean;

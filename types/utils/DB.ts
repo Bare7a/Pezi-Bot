@@ -1,7 +1,16 @@
 import { TwitchActions, UserMessage } from './Twitch';
 import { LogTable, Log } from '../models/Log';
 import { UserTable, User, UserRoleType } from '../models/User';
-import { CronTable, ICron, Cron, RaffleCronType, RewardCronType, StatusCronType, TriviaCronType } from '../models/Cron';
+import {
+  CronTable,
+  ICron,
+  Cron,
+  RaffleCronType,
+  RewardCronType,
+  StatusCronType,
+  TriviaCronType,
+  WatchTimeCronType,
+} from '../models/Cron';
 import {
   CommandTable,
   CommandType,
@@ -19,6 +28,7 @@ import {
   IStatsCommand,
   ITriviaCommand,
   IPointsCommand,
+  IWatchTimeCommand,
 } from '../models/Command';
 
 export type SqliteColumn = string | number | boolean;
@@ -58,22 +68,22 @@ export interface DatabaseConnection {
   incrementOne<T extends Table>(
     table: T['_name'],
     data: Partial<OmitNonNumbers<TableColumns<T>>>,
-    where?: QueryOptions<T>['where']
+    where?: QueryOptions<T>['where'],
   ): T | null;
   incrementMany<T extends Table>(
     table: T['_name'],
     data: Partial<OmitNonNumbers<TableColumns<T>>>,
-    where?: QueryOptions<T>['where']
+    where?: QueryOptions<T>['where'],
   ): T[];
   decrementOne<T extends Table>(
     table: T['_name'],
     data: Partial<OmitNonNumbers<TableColumns<T>>>,
-    where?: QueryOptions<T>['where']
+    where?: QueryOptions<T>['where'],
   ): T | null;
   decrementMany<T extends Table>(
     table: T['_name'],
     data: Partial<OmitNonNumbers<TableColumns<T>>>,
-    where?: QueryOptions<T>['where']
+    where?: QueryOptions<T>['where'],
   ): T[];
   truncate<T extends Table>(table: T['_name']): void;
 }
@@ -133,6 +143,9 @@ export const isTriviaCommand = (command: Command<ICommand>): command is Command<
 export const isPointsCommand = (command: Command<ICommand>): command is Command<IPointsCommand> =>
   command.type === 'POINTS';
 
+export const isWatchTimeCommand = (command: Command<ICommand>): command is Command<IWatchTimeCommand> =>
+  command.type === 'WATCH_TIME';
+
 export type CommandActionType<T extends ICommand> = {
   isValid(command: Command<ICommand>): command is Command<T>;
   execute(user: User, params: string[], command: Command<T>, db: DbActions, bot: TwitchActions): boolean;
@@ -158,6 +171,7 @@ export const isRaffleCron = (cron: Cron<ICron>): cron is Cron<RaffleCronType> =>
 export const isRewardCron = (cron: Cron<ICron>): cron is Cron<RewardCronType> => cron.type === 'REWARD';
 export const isStatusCron = (cron: Cron<ICron>): cron is Cron<StatusCronType> => cron.type === 'STATUS';
 export const isTriviaCron = (cron: Cron<ICron>): cron is Cron<TriviaCronType> => cron.type === 'TRIVIA';
+export const isWatchTimeCron = (cron: Cron<ICron>): cron is Cron<WatchTimeCronType> => cron.type === 'WATCH_TIME';
 
 // Log
 export interface LogActions {
@@ -182,4 +196,6 @@ export interface UserActions {
   setPoints(user: User, cost: number, points: number, type: string, Log?: LogActions): boolean;
   removePoints(user: User, cost: number, points: number, type: string, Log?: LogActions): boolean;
   addPointsInBulk(userIds: string[], cost: number, points: number): boolean;
+  addWatchTime(user: User, watchTime: number): boolean;
+  addWatchTimeInBulk(userIds: string[], watchTime: number): boolean;
 }

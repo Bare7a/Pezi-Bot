@@ -93,6 +93,16 @@ You can use: [Twitch Token Generator](https://twitchtokengenerator.com/) for **b
 - Customisable timers for switching the questions (min-max)
 - Customisable response messages
 
+## Watch Time
+
+- Enable/Disable using the command when the stream is offline
+- Enable/Disable cooldown / user cooldown
+- Enable/Disable cooldown / user cooldown messages
+- Customisable command name
+- Customisable permission for using the command
+- Customisable cooldown / user cooldown timers
+- Customisable response messages
+
 # Crons
 
 ## Stream Status
@@ -105,6 +115,11 @@ You can use: [Twitch Token Generator](https://twitchtokengenerator.com/) for **b
 - Automatically gives rewards to the people connected to the chat
 - Customisable rewards based on user roles and viewership
 - Customisable rewards based on user roles and chat interaction
+- Customisable polling time
+
+## Watch Time
+
+- Automatically updates the viewers watch time
 - Customisable polling time
 
 # Utility Commands

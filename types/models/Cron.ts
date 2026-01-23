@@ -1,6 +1,6 @@
 import { UserRoleType, User } from './User';
 
-export type CronType = 'RAFFLE' | 'REWARD' | 'STATUS' | 'TRIVIA';
+export type CronType = 'RAFFLE' | 'REWARD' | 'STATUS' | 'TRIVIA' | 'WATCH_TIME';
 
 export type RaffleCronType = {
   type: 'RAFFLE';
@@ -51,7 +51,14 @@ export type TriviaCronOptions = {
   previousQuestions: Record<string, true>;
 };
 
-export type ICron = RaffleCronType | RewardCronType | StatusCronType | TriviaCronType;
+export type WatchTimeCronType = {
+  type: 'WATCH_TIME';
+  opts: WatchTimeCronOptions;
+};
+
+export type WatchTimeCronOptions = {};
+
+export type ICron = RaffleCronType | RewardCronType | StatusCronType | TriviaCronType | WatchTimeCronType;
 
 export type RewardType = { [key in UserRoleType]: number };
 export type UserRoleMapType = Map<UserRoleType, User[]>;

@@ -12,6 +12,7 @@ export const commandType = [
   'STATS',
   'TRIVIA',
   'POINTS',
+  'WATCH_TIME',
 ] as const;
 
 export type CommandType = (typeof commandType)[number];
@@ -196,6 +197,20 @@ export type IPointsOptions = {
   }[];
 };
 
+export type IWatchTimeCommand = {
+  type: 'WATCH_TIME';
+  opts: IWatchTimeOptions;
+};
+
+export type IWatchTimeOptions = {
+  messages: {
+    userWatchInfo: string;
+    minutes: string;
+    hours: string;
+    days: string;
+  };
+};
+
 export type ICommand =
   | ICmdCommand
   | IAdminCommand
@@ -207,7 +222,8 @@ export type ICommand =
   | ITriviaCommand
   | IPointsCommand
   | INoteCommand
-  | IMessageCommand;
+  | IMessageCommand
+  | IWatchTimeCommand;
 
 export type GenericCommand = {
   id: number;

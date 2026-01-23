@@ -9,6 +9,7 @@ import { RaffleCommand } from '../commands/Raffle';
 import { SlotCommand } from '../commands/Slot';
 import { StatsCommand } from '../commands/Stats';
 import { TriviaCommand } from '../commands/Trivia';
+import { WatchTimeCommand } from '../commands/WatchTime';
 import { StatusCronType } from '../types/models/Cron';
 import { TwitchActions } from '../types/utils/Twitch';
 import { UserRoleType, User, UserTable } from '../types/models/User';
@@ -159,6 +160,7 @@ export class CommandEntity implements CommandActions {
     if (SlotCommand.isValid(command)) return SlotCommand.execute(user, params, command, db, bot);
     if (StatsCommand.isValid(command)) return StatsCommand.execute(user, params, command, db, bot);
     if (TriviaCommand.isValid(command)) return TriviaCommand.execute(user, params, command, db, bot);
+    if (WatchTimeCommand.isValid(command)) return WatchTimeCommand.execute(user, params, command, db, bot);
     return false;
   }
 }
