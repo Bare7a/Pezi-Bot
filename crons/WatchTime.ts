@@ -1,6 +1,6 @@
 import { TwitchActions } from '../types/utils/Twitch';
 import { DbActions, CronActionType, isWatchTimeCron } from '../types/utils/DB';
-import { Cron, WatchTimeCronType, UserRoleMapType, ICron, StatusCronType } from '../types/models/Cron';
+import { Cron, WatchTimeCronType, ICron, StatusCronType } from '../types/models/Cron';
 
 export const WatchTimeCron: CronActionType<WatchTimeCronType> = {
   isValid: (cron: Cron<ICron>): cron is Cron<WatchTimeCronType> => isWatchTimeCron(cron),
