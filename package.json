@@ -2,6 +2,11 @@
   "name": "pezi-bot",
   "module": "index.ts",
   "type": "module",
+  "version": "1.0.0",
+  "author": "Bare7a <bare7a@gmail.com>",
+  "license": "GPL-3.0-only",
+  "homepage": "https://github.com/Bare7a/pezi-bot",
+  "description": "Pezi Bot is the ultimate Twitch chatbot, offering points, minigames, and interactive commands to engage viewers and enhance your streams.",
   "scripts": {
     "start": "bun run index.ts",
     "build": "bun build ./index.ts --compile --outfile ./bin/pezi-bot",
@@ -12,5 +17,27 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bare7a/pezi-bot"
+  },
+  "engines": {
+    "bun": ">=1.3.0"
+  },
+  "bin": {
+    "pezi-bot": "./bin/pezi-bot"
+  },
+  "keywords": [
+    "twitch",
+    "chatbot",
+    "bot",
+    "minigames",
+    "trivia",
+    "raffle",
+    "slots",
+    "dice",
+    "points",
+    "streaming"
+  ]
 }
