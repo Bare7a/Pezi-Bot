@@ -2,7 +2,7 @@ import { User } from '../../types/models/User';
 import { DbActions } from '../../types/utils/DB';
 import { MockDbState } from './Db';
 
-export const createTestUser = (overrides: Partial<User> = {}, db: DbActions & { state: MockDbState }): User => {
+export const createTestUser = (db: DbActions & { state: MockDbState }, overrides: Partial<User> = {}): User => {
   const username = overrides.username ?? 'Tester';
   const userId = username.toLowerCase();
 

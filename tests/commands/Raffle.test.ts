@@ -3,9 +3,9 @@ import { RaffleCommand } from '../../commands/Raffle';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
 import { createTestUser } from '../utils/User';
-import { Command, IRaffleCommand } from '../../types/models/Command';
 import { RaffleCronType, Cron } from '../../types/models/Cron';
 import { RaffleCron } from '../../crons/Raffle';
+import { createTestCommand } from '../utils/Command';
 
 let db: ReturnType<typeof createMockDb>;
 let bot: ReturnType<typeof createMockBot>;
@@ -14,20 +14,6 @@ beforeEach(() => {
   db = createMockDb();
   bot = createMockBot();
 });
-
-const createTestRaffleCommand = (overrides?: Partial<Command<IRaffleCommand>>): Command<IRaffleCommand> => {
-  return {
-    ...RaffleCommand.defaultConfig,
-    id: 1,
-    createdAt: new Date(0),
-    updatedAt: new Date(0),
-    ...overrides,
-    opts: {
-      ...RaffleCommand.defaultConfig.opts,
-      ...(overrides?.opts ?? {}),
-    },
-  };
-};
 
 const setupRaffleCron = (overrides?: Partial<RaffleCronType>): Cron<RaffleCronType> => {
   const cron: Cron<RaffleCronType> = {
@@ -63,8 +49,8 @@ const setupRaffleCron = (overrides?: Partial<RaffleCronType>): Cron<RaffleCronTy
 //
 
 test('returns false for invalid bet amount', () => {
-  const user = createTestUser({ points: 100 }, db);
-  const command = createTestRaffleCommand();
+  const user = createTestUser(db, { points: 100 });
+  const command = createTestCommand(RaffleCommand.defaultConfig, db);
 
   setupRaffleCron();
 
@@ -76,8 +62,8 @@ test('returns false for invalid bet amount', () => {
 });
 
 test('returns false if bet is higher than user points', () => {
-  const user = createTestUser({ points: 10 }, db);
-  const command = createTestRaffleCommand();
+  const user = createTestUser(db, { points: 10 });
+  const command = createTestCommand(RaffleCommand.defaultConfig, db);
 
   setupRaffleCron();
 
@@ -88,8 +74,8 @@ test('returns false if bet is higher than user points', () => {
 });
 
 test('returns false if betting is not opened', () => {
-  const user = createTestUser({ points: 100 }, db);
-  const command = createTestRaffleCommand();
+  const user = createTestUser(db, { points: 100 });
+  const command = createTestCommand(RaffleCommand.defaultConfig, db);
 
   setupRaffleCron({ opts: { isBettingOpened: false, pot: 0, userList: [] } });
 
@@ -100,8 +86,8 @@ test('returns false if betting is not opened', () => {
 });
 
 test('returns false if user already bet', () => {
-  const user = createTestUser({ points: 100 }, db);
-  const command = createTestRaffleCommand();
+  const user = createTestUser(db, { points: 100 });
+  const command = createTestCommand(RaffleCommand.defaultConfig, db);
 
   setupRaffleCron({ opts: { isBettingOpened: false, pot: 0, userList: [[user.userId, 10]] } });
 
@@ -116,8 +102,8 @@ test('returns false if user already bet', () => {
 //
 
 test('successful bet updates DB and cron correctly', () => {
-  const user = createTestUser({ points: 100 }, db);
-  const command = createTestRaffleCommand();
+  const user = createTestUser(db, { points: 100 });
+  const command = createTestCommand(RaffleCommand.defaultConfig, db);
 
   const cron = setupRaffleCron();
 
@@ -143,9 +129,9 @@ test('successful bet updates DB and cron correctly', () => {
 //
 
 test('replaces template variables correctly', () => {
-  const user = createTestUser({ points: 100 }, db);
+  const user = createTestUser(db, { points: 100 });
 
-  const command = createTestRaffleCommand({
+  const command = createTestCommand(RaffleCommand.defaultConfig, db, {
     opts: {
       ...RaffleCommand.defaultConfig.opts,
       messages: { ...RaffleCommand.defaultConfig.opts.messages, userBetted: '$user bet $bet ($min-$max) $currency' },
@@ -164,15 +150,12 @@ test('replaces template variables correctly', () => {
 //
 
 test('does not send message if showMessages.userBetted is false', () => {
-  const user = createTestUser({ points: 100 }, db);
+  const user = createTestUser(db, { points: 100 });
 
-  const command = createTestRaffleCommand({
+  const command = createTestCommand(RaffleCommand.defaultConfig, db, {
     opts: {
       ...RaffleCommand.defaultConfig.opts,
-      showMessages: {
-        ...RaffleCommand.defaultConfig.opts.showMessages,
-        userBetted: false,
-      },
+      showMessages: { ...RaffleCommand.defaultConfig.opts.showMessages, userBetted: false },
     },
   });
 

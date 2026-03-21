@@ -1,11 +1,11 @@
 import { test, expect, beforeEach, mock, afterAll, beforeAll } from 'bun:test';
 
-import { Command, IFlipCommand } from '../../types/models/Command';
 import { FlipCommand } from '../../commands/Flip';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
 import { createTestUser } from '../utils/User';
 import { env } from '../../utils/Config';
+import { createTestCommand } from '../utils/Command';
 
 let db: ReturnType<typeof createMockDb>;
 let bot: ReturnType<typeof createMockBot>;
@@ -26,27 +26,13 @@ beforeEach(() => {
   bot = createMockBot();
 });
 
-const createTestFlipCommand = (overrides?: Partial<Command<IFlipCommand>>): Command<IFlipCommand> => {
-  return {
-    ...FlipCommand.defaultConfig,
-    id: 1,
-    createdAt: new Date(0),
-    updatedAt: new Date(0),
-    ...overrides,
-    opts: {
-      ...FlipCommand.defaultConfig.opts,
-      ...(overrides?.opts ?? {}),
-    },
-  };
-};
-
 //
 // ❌ INVALID CASES
 //
 
 test('returns false if user has insufficient points', () => {
-  const user = createTestUser({ points: 5 }, db);
-  const command = createTestFlipCommand({ cost: 10 });
+  const user = createTestUser(db, { points: 5 });
+  const command = createTestCommand(FlipCommand.defaultConfig, db, { cost: 10 });
 
   const result = FlipCommand.execute(user, [], command, db, bot);
 
@@ -57,8 +43,8 @@ test('returns false if user has insufficient points', () => {
 });
 
 test('returns false if cost is 0', () => {
-  const user = createTestUser({}, db);
-  const command = createTestFlipCommand({ cost: 0 });
+  const user = createTestUser(db, {});
+  const command = createTestCommand(FlipCommand.defaultConfig, db, { cost: 0 });
 
   const result = FlipCommand.execute(user, [], command, db, bot);
 
@@ -73,8 +59,8 @@ test('returns false if cost is 0', () => {
 test('losing flip deducts points and sends correct message', () => {
   Math.random = mock(() => 0.2);
 
-  const user = createTestUser({}, db);
-  const command = createTestFlipCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(FlipCommand.defaultConfig, db);
 
   FlipCommand.execute(user, [], command, db, bot);
 
@@ -90,8 +76,8 @@ test('losing flip deducts points and sends correct message', () => {
 test('winning flip adds points and sends correct message', () => {
   Math.random = mock(() => 0.9);
 
-  const user = createTestUser({}, db);
-  const command = createTestFlipCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(FlipCommand.defaultConfig, db);
 
   FlipCommand.execute(user, [], command, db, bot);
 
@@ -107,9 +93,9 @@ test('winning flip adds points and sends correct message', () => {
 test('replaces all template variables correctly', () => {
   Math.random = mock(() => 0.9);
 
-  const user = createTestUser({}, db);
+  const user = createTestUser(db, {});
 
-  const command = createTestFlipCommand({
+  const command = createTestCommand(FlipCommand.defaultConfig, db, {
     opts: {
       multi: 3,
       messages: {
@@ -127,8 +113,8 @@ test('replaces all template variables correctly', () => {
 test('uses custom cost from params', () => {
   Math.random = mock(() => 0.9);
 
-  const user = createTestUser({}, db);
-  const command = createTestFlipCommand({ customCost: true });
+  const user = createTestUser(db, {});
+  const command = createTestCommand(FlipCommand.defaultConfig, db, { customCost: true });
 
   FlipCommand.execute(user, ['25'], command, db, bot);
 
@@ -139,8 +125,8 @@ test('uses custom cost from params', () => {
 test('calls addPoints with correct values', () => {
   Math.random = mock(() => 0.9);
 
-  const user = createTestUser({}, db);
-  const command = createTestFlipCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(FlipCommand.defaultConfig, db);
 
   FlipCommand.execute(user, [], command, db, bot);
 

@@ -4,7 +4,7 @@ import { SlotCommand } from '../../commands/Slot';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
 import { createTestUser } from '../utils/User';
-import { Command, ISlotCommand } from '../../types/models/Command';
+import { createTestCommand } from '../utils/Command';
 
 let db: ReturnType<typeof createMockDb>;
 let bot: ReturnType<typeof createMockBot>;
@@ -24,28 +24,13 @@ beforeEach(() => {
   bot = createMockBot();
 });
 
-// helper to create a slot command
-const createTestSlotCommand = (overrides?: Partial<Command<ISlotCommand>>): Command<ISlotCommand> => {
-  return {
-    ...SlotCommand.defaultConfig,
-    id: 1,
-    createdAt: new Date(0),
-    updatedAt: new Date(0),
-    ...overrides,
-    opts: {
-      ...SlotCommand.defaultConfig.opts,
-      ...(overrides?.opts ?? {}),
-    },
-  };
-};
-
 //
 // ❌ INVALID CASES
 //
 
 test('returns false if user has insufficient points', () => {
-  const user = createTestUser({ points: 5 }, db);
-  const command = createTestSlotCommand();
+  const user = createTestUser(db, { points: 5 });
+  const command = createTestCommand(SlotCommand.defaultConfig, db);
 
   const result = SlotCommand.execute(user, [], command, db, bot);
 
@@ -55,8 +40,8 @@ test('returns false if user has insufficient points', () => {
 });
 
 test('returns false if cost is 0', () => {
-  const user = createTestUser({}, db);
-  const command = createTestSlotCommand({ cost: 0 });
+  const user = createTestUser(db, {});
+  const command = createTestCommand(SlotCommand.defaultConfig, db, { cost: 0 });
 
   const result = SlotCommand.execute(user, [], command, db, bot);
 
@@ -77,9 +62,9 @@ test('losing slot spin deducts points and sends correct message', () => {
     return (index % emotes.length) / emotes.length;
   });
 
-  const user = createTestUser({}, db);
+  const user = createTestUser(db, {});
 
-  const command = createTestSlotCommand();
+  const command = createTestCommand(SlotCommand.defaultConfig, db);
 
   SlotCommand.execute(user, [], command, db, bot);
 
@@ -100,9 +85,9 @@ test('winning slot with multiS', () => {
   let idx = 0;
   Math.random = mock(() => rolls[idx++] / (emotes.length + 1));
 
-  const user = createTestUser({}, db);
+  const user = createTestUser(db, {});
 
-  const command = createTestSlotCommand();
+  const command = createTestCommand(SlotCommand.defaultConfig, db);
 
   SlotCommand.execute(user, [], command, db, bot);
 
@@ -116,8 +101,8 @@ test('winning slot with multiJ', () => {
   // all super emotes → multiJ
   Math.random = mock(() => 1); // always pick last emote = superEmote
 
-  const user = createTestUser({}, db);
-  const command = createTestSlotCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(SlotCommand.defaultConfig, db);
 
   SlotCommand.execute(user, [], command, db, bot);
 
@@ -135,8 +120,8 @@ test('uses custom cost from params', () => {
   let index = 0;
   Math.random = mock(() => index++ / 6);
 
-  const user = createTestUser({}, db);
-  const command = createTestSlotCommand({ customCost: true });
+  const user = createTestUser(db, {});
+  const command = createTestCommand(SlotCommand.defaultConfig, db, { customCost: true });
 
   SlotCommand.execute(user, ['25'], command, db, bot);
 
@@ -152,8 +137,8 @@ test('calls addPoints with correct values', () => {
   let index = 0;
   Math.random = mock(() => index++ / 6);
 
-  const user = createTestUser({}, db);
-  const command = createTestSlotCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(SlotCommand.defaultConfig, db);
 
   SlotCommand.execute(user, [], command, db, bot);
 

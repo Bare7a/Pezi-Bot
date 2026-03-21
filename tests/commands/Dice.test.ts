@@ -4,7 +4,7 @@ import { DiceCommand } from '../../commands/Dice';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
 import { createTestUser } from '../utils/User';
-import { Command, IDiceCommand } from '../../types/models/Command';
+import { createTestCommand } from '../utils/Command';
 
 let db: ReturnType<typeof createMockDb>;
 let bot: ReturnType<typeof createMockBot>;
@@ -25,28 +25,13 @@ beforeEach(() => {
   bot = createMockBot();
 });
 
-// helper to create a dice command
-const createTestDiceCommand = (overrides?: Partial<Command<IDiceCommand>>): Command<IDiceCommand> => {
-  return {
-    ...DiceCommand.defaultConfig,
-    id: 1,
-    createdAt: new Date(0),
-    updatedAt: new Date(0),
-    ...overrides,
-    opts: {
-      ...DiceCommand.defaultConfig.opts,
-      ...(overrides?.opts ?? {}),
-    },
-  };
-};
-
 //
 // ❌ INVALID CASES
 //
 
 test('returns false if user has insufficient points', () => {
-  const user = createTestUser({ points: 5 }, db);
-  const command = createTestDiceCommand();
+  const user = createTestUser(db, { points: 5 });
+  const command = createTestCommand(DiceCommand.defaultConfig, db);
 
   const result = DiceCommand.execute(user, [], command, db, bot);
 
@@ -56,8 +41,8 @@ test('returns false if user has insufficient points', () => {
 });
 
 test('returns false if cost is 0', () => {
-  const user = createTestUser({}, db);
-  const command = createTestDiceCommand({ cost: 0 });
+  const user = createTestUser(db, {});
+  const command = createTestCommand(DiceCommand.defaultConfig, db, { cost: 0 });
 
   const result = DiceCommand.execute(user, [], command, db, bot);
 
@@ -73,8 +58,8 @@ test('losing dice roll deducts points and sends correct message', () => {
   // simulate low sum: 1+1+1 = 3
   Math.random = mock(() => 0); // each dice = 1
 
-  const user = createTestUser({}, db);
-  const command = createTestDiceCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(DiceCommand.defaultConfig, db);
 
   DiceCommand.execute(user, [], command, db, bot);
 
@@ -94,8 +79,8 @@ test('winning dice roll with multiS multiplier', () => {
   let index = 0;
   Math.random = mock(() => (rolls[index++] - 1) / 6);
 
-  const user = createTestUser({}, db);
-  const command = createTestDiceCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(DiceCommand.defaultConfig, db);
 
   DiceCommand.execute(user, [], command, db, bot);
 
@@ -111,8 +96,8 @@ test('winning dice roll with multiM multiplier', () => {
   let index = 0;
   Math.random = mock(() => (rolls[index++] - 1) / 6);
 
-  const user = createTestUser({}, db);
-  const command = createTestDiceCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(DiceCommand.defaultConfig, db);
 
   DiceCommand.execute(user, [], command, db, bot);
 
@@ -128,8 +113,8 @@ test('winning dice roll with multiL multiplier', () => {
   let index = 0;
   Math.random = mock(() => (rolls[index++] - 1) / 6);
 
-  const user = createTestUser({}, db);
-  const command = createTestDiceCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(DiceCommand.defaultConfig, db);
 
   DiceCommand.execute(user, [], command, db, bot);
 
@@ -145,8 +130,8 @@ test('winning dice roll with multiJ multiplier', () => {
   let index = 0;
   Math.random = mock(() => (rolls[index++] - 1) / 6);
 
-  const user = createTestUser({}, db);
-  const command = createTestDiceCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(DiceCommand.defaultConfig, db);
 
   DiceCommand.execute(user, [], command, db, bot);
 
@@ -166,9 +151,9 @@ test('replaces template variables correctly', () => {
   let index = 0;
   Math.random = mock(() => (rolls[index++] - 1) / 6);
 
-  const user = createTestUser({}, db);
+  const user = createTestUser(db, {});
 
-  const command = createTestDiceCommand({
+  const command = createTestCommand(DiceCommand.defaultConfig, db, {
     opts: {
       messages: {
         won: '$user rolled $dices and got $reward $currency!',
@@ -195,8 +180,8 @@ test('uses custom cost from params', () => {
   let index = 0;
   Math.random = mock(() => (rolls[index++] - 1) / 6);
 
-  const user = createTestUser({}, db);
-  const command = createTestDiceCommand({ customCost: true });
+  const user = createTestUser(db, {});
+  const command = createTestCommand(DiceCommand.defaultConfig, db, { customCost: true });
 
   DiceCommand.execute(user, ['25'], command, db, bot);
 
@@ -213,8 +198,8 @@ test('calls addPoints with correct values', () => {
   let index = 0;
   Math.random = mock(() => (rolls[index++] - 1) / 6);
 
-  const user = createTestUser({}, db);
-  const command = createTestDiceCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(DiceCommand.defaultConfig, db);
 
   DiceCommand.execute(user, [], command, db, bot);
 

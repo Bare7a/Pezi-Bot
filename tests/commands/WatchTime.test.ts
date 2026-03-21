@@ -1,27 +1,13 @@
-import { test, expect, beforeEach, mock } from 'bun:test';
+import { test, expect, beforeEach } from 'bun:test';
+import { env } from '../../utils/Config';
 import { WatchTimeCommand } from '../../commands/WatchTime';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
 import { createTestUser } from '../utils/User';
-import { Command, IWatchTimeCommand } from '../../types/models/Command';
-import { env } from '../../utils/Config';
+import { createTestCommand } from '../utils/Command';
 
 let db: ReturnType<typeof createMockDb>;
 let bot: ReturnType<typeof createMockBot>;
-
-const createTestWatchTimeCommand = (overrides?: Partial<Command<IWatchTimeCommand>>): Command<IWatchTimeCommand> => {
-  return {
-    ...WatchTimeCommand.defaultConfig,
-    id: 1,
-    createdAt: new Date(0),
-    updatedAt: new Date(0),
-    ...overrides,
-    opts: {
-      ...WatchTimeCommand.defaultConfig.opts,
-      ...(overrides?.opts ?? {}),
-    },
-  };
-};
 
 beforeEach(() => {
   db = createMockDb();
@@ -35,8 +21,8 @@ beforeEach(() => {
 //
 
 test('returns false if user does not have enough points', () => {
-  const user = createTestUser({ points: 5, watchTime: 3600 }, db);
-  const command = createTestWatchTimeCommand({ cost: 10 });
+  const user = createTestUser(db, { points: 5, watchTime: 3600 });
+  const command = createTestCommand(WatchTimeCommand.defaultConfig, db, { cost: 10 });
 
   const result = WatchTimeCommand.execute(user, [], command, db, bot);
 
@@ -50,8 +36,8 @@ test('returns false if user does not have enough points', () => {
 //
 
 test('returns true and sends correct watch time (minutes)', () => {
-  const user = createTestUser({ points: 100, watchTime: 120 }, db); // 2 minute
-  const command = createTestWatchTimeCommand();
+  const user = createTestUser(db, { points: 100, watchTime: 120 }); // 2 minute
+  const command = createTestCommand(WatchTimeCommand.defaultConfig, db);
 
   WatchTimeCommand.execute(user, [], command, db, bot);
 
@@ -59,8 +45,8 @@ test('returns true and sends correct watch time (minutes)', () => {
 });
 
 test('returns correct watch time (hours + minutes)', () => {
-  const user = createTestUser({ points: 100, watchTime: 3660 }, db); // 1h 1
-  const command = createTestWatchTimeCommand();
+  const user = createTestUser(db, { points: 100, watchTime: 3660 }); // 1h 1
+  const command = createTestCommand(WatchTimeCommand.defaultConfig, db);
 
   WatchTimeCommand.execute(user, [], command, db, bot);
 
@@ -69,8 +55,8 @@ test('returns correct watch time (hours + minutes)', () => {
 
 test('returns correct watch time (days + hours + minutes)', () => {
   // 1d 1h 1m
-  const user = createTestUser({ points: 100, watchTime: 90061 }, db);
-  const command = createTestWatchTimeCommand();
+  const user = createTestUser(db, { points: 100, watchTime: 90061 });
+  const command = createTestCommand(WatchTimeCommand.defaultConfig, db);
 
   WatchTimeCommand.execute(user, [], command, db, bot);
 
@@ -78,8 +64,8 @@ test('returns correct watch time (days + hours + minutes)', () => {
 });
 
 test('deducts cost from user', () => {
-  const user = createTestUser({ points: 100, watchTime: 60 }, db);
-  const command = createTestWatchTimeCommand({ cost: 10 });
+  const user = createTestUser(db, { points: 100, watchTime: 60 });
+  const command = createTestCommand(WatchTimeCommand.defaultConfig, db, { cost: 10 });
 
   WatchTimeCommand.execute(user, [], command, db, bot);
 
@@ -88,8 +74,8 @@ test('deducts cost from user', () => {
 });
 
 test('uses custom cost from params', () => {
-  const user = createTestUser({ points: 100, watchTime: 60 }, db);
-  const command = createTestWatchTimeCommand({ customCost: true, cost: 25 });
+  const user = createTestUser(db, { points: 100, watchTime: 60 });
+  const command = createTestCommand(WatchTimeCommand.defaultConfig, db, { customCost: true, cost: 25 });
 
   WatchTimeCommand.execute(user, ['25'], command, db, bot);
 
@@ -102,8 +88,8 @@ test('uses custom cost from params', () => {
 //
 
 test('replaces template variables correctly', () => {
-  const user = createTestUser({ points: 100, watchTime: 60 }, db);
-  const command = createTestWatchTimeCommand({
+  const user = createTestUser(db, { points: 100, watchTime: 60 });
+  const command = createTestCommand(WatchTimeCommand.defaultConfig, db, {
     opts: {
       messages: {
         userWatchInfo: '$user watched $streamer for $watchTime total',

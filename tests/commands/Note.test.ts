@@ -3,25 +3,11 @@ import { NoteCommand } from '../../commands/Note';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
 import { createTestUser } from '../utils/User';
-import { Command, IMessageCommand, INoteCommand } from '../../types/models/Command';
+import { Command, IMessageCommand } from '../../types/models/Command';
+import { createTestCommand } from '../utils/Command';
 
 let db: ReturnType<typeof createMockDb>;
 let bot: ReturnType<typeof createMockBot>;
-
-// helper to create a NoteCommand instance
-const createTestNoteCommand = (overrides?: Partial<Command<INoteCommand>>): Command<INoteCommand> => {
-  return {
-    ...NoteCommand.defaultConfig,
-    id: 1,
-    createdAt: new Date(0),
-    updatedAt: new Date(0),
-    ...overrides,
-    opts: {
-      ...NoteCommand.defaultConfig.opts,
-      ...(overrides?.opts ?? {}),
-    },
-  };
-};
 
 // helper to create a target note returned by fetchByName or createNewMessage
 const createTargetNote = (overrides?: Partial<Command<IMessageCommand>>): Command<IMessageCommand> => {
@@ -57,16 +43,16 @@ beforeEach(() => {
 //
 
 test('returns false if missing command name', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestNoteCommand();
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(NoteCommand.defaultConfig, db);
 
   expect(NoteCommand.execute(user, [], cmd, db, bot)).toBe(false);
   expect(bot.send).not.toHaveBeenCalled();
 });
 
 test('returns false if target command does not exist and modifier is not add', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestNoteCommand();
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(NoteCommand.defaultConfig, db);
   db.Command.update(cmd);
 
   expect(NoteCommand.execute(user, ['enable', 'nonexistent'], cmd, db, bot)).toBe(false);
@@ -74,8 +60,8 @@ test('returns false if target command does not exist and modifier is not add', (
 });
 
 test('returns false if fetched command is invalid MessageCommand', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestNoteCommand();
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(NoteCommand.defaultConfig, db);
 
   db.Command.fetchByName = mock(() => ({ id: 2, name: 'x', type: 'NOTE' }) as any);
 
@@ -88,8 +74,8 @@ test('returns false if fetched command is invalid MessageCommand', () => {
 //
 
 test('adds a new note if it does not exist', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestNoteCommand();
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(NoteCommand.defaultConfig, db);
   db.Command.update(cmd);
   db.Command.createNewMessage = mock((name: string, message: string) => createTargetNote({ name, opts: { message } }));
 
@@ -101,8 +87,8 @@ test('adds a new note if it does not exist', () => {
 });
 
 test('removes a note and sends message', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestNoteCommand();
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(NoteCommand.defaultConfig, db);
 
   const target = createTargetNote();
   db.Command.update(target);
@@ -114,8 +100,8 @@ test('removes a note and sends message', () => {
 });
 
 test('enables a note and sends message', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestNoteCommand();
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(NoteCommand.defaultConfig, db);
 
   const target = createTargetNote({ isEnabled: false });
   db.Command.update(target);
@@ -127,8 +113,8 @@ test('enables a note and sends message', () => {
 });
 
 test('disables a note and sends message', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestNoteCommand();
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(NoteCommand.defaultConfig, db);
 
   const target = createTargetNote({ isEnabled: true });
   db.Command.update(target);
@@ -140,8 +126,8 @@ test('disables a note and sends message', () => {
 });
 
 test('updates userCd and sends message', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestNoteCommand();
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(NoteCommand.defaultConfig, db);
 
   const target = createTargetNote({ userCd: 0 });
   db.Command.update(target);
@@ -153,8 +139,8 @@ test('updates userCd and sends message', () => {
 });
 
 test('updates globalCd and sends message', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestNoteCommand();
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(NoteCommand.defaultConfig, db);
 
   const target = createTargetNote({ globalCd: 0 });
   db.Command.update(target);
@@ -166,8 +152,8 @@ test('updates globalCd and sends message', () => {
 });
 
 test('sets a new message content and sends message', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestNoteCommand();
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(NoteCommand.defaultConfig, db);
 
   const target = createTargetNote({ opts: { message: 'Old message' } });
   db.Command.update(target);

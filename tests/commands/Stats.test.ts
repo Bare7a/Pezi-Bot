@@ -1,10 +1,10 @@
 import { test, expect, beforeEach, mock } from 'bun:test';
+import { env } from '../../utils/Config';
 import { StatsCommand } from '../../commands/Stats';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
 import { createTestUser } from '../utils/User';
-import { Command, IStatsCommand } from '../../types/models/Command';
-import { env } from '../../utils/Config';
+import { createTestCommand } from '../utils/Command';
 
 let db: ReturnType<typeof createMockDb>;
 let bot: ReturnType<typeof createMockBot>;
@@ -30,27 +30,13 @@ const createUserBets = (db: ReturnType<typeof createMockDb>, userBets: { cost: n
     })),
   ));
 
-const createTestStatsCommand = (overrides?: Partial<Command<IStatsCommand>>): Command<IStatsCommand> => {
-  return {
-    ...StatsCommand.defaultConfig,
-    id: 1,
-    createdAt: new Date(0),
-    updatedAt: new Date(0),
-    ...overrides,
-    opts: {
-      ...StatsCommand.defaultConfig.opts,
-      ...(overrides?.opts ?? {}),
-    },
-  };
-};
-
 //
 // ❌ EDGE CASES
 //
 
 test('handles no logs (zero stake and profit)', () => {
-  const user = createTestUser({}, db);
-  const command = createTestStatsCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(StatsCommand.defaultConfig, db);
 
   db.Log.getUserBets = mock(() => []);
 
@@ -66,8 +52,8 @@ test('handles no logs (zero stake and profit)', () => {
 //
 
 test('sends positive message when profit >= 0', () => {
-  const user = createTestUser({}, db);
-  const command = createTestStatsCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(StatsCommand.defaultConfig, db);
 
   createUserBets(db, [
     { cost: 10, points: 5 },
@@ -87,8 +73,8 @@ test('sends positive message when profit >= 0', () => {
 //
 
 test('sends negative message when profit < 0', () => {
-  const user = createTestUser({}, db);
-  const command = createTestStatsCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(StatsCommand.defaultConfig, db);
 
   createUserBets(db, [
     { cost: 10, points: -5 },
@@ -108,9 +94,9 @@ test('sends negative message when profit < 0', () => {
 //
 
 test('replaces template variables correctly', () => {
-  const user = createTestUser({}, db);
+  const user = createTestUser(db, {});
 
-  const command = createTestStatsCommand({
+  const command = createTestCommand(StatsCommand.defaultConfig, db, {
     opts: {
       messages: {
         positive: '$user profit: $profit / stake: $stake $currency',
@@ -131,8 +117,8 @@ test('replaces template variables correctly', () => {
 //
 
 test('correctly aggregates multiple logs', () => {
-  const user = createTestUser({}, db);
-  const command = createTestStatsCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(StatsCommand.defaultConfig, db);
 
   createUserBets(db, [
     { cost: 10, points: -5 },

@@ -1,27 +1,12 @@
-import { test, expect, beforeEach, mock } from 'bun:test';
+import { test, expect, beforeEach } from 'bun:test';
 import { PointsCommand } from '../../commands/Points';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
 import { createTestUser } from '../utils/User';
-import { Command, IPointsCommand } from '../../types/models/Command';
+import { createTestCommand } from '../utils/Command';
 
 let db: ReturnType<typeof createMockDb>;
 let bot: ReturnType<typeof createMockBot>;
-
-// helper to create a points command
-const createTestPointsCommand = (overrides?: Partial<Command<IPointsCommand>>): Command<IPointsCommand> => {
-  return {
-    ...PointsCommand.defaultConfig,
-    id: 1,
-    createdAt: new Date(0),
-    updatedAt: new Date(0),
-    ...overrides,
-    opts: {
-      ...PointsCommand.defaultConfig.opts,
-      ...(overrides?.opts ?? {}),
-    },
-  };
-};
 
 beforeEach(() => {
   db = createMockDb();
@@ -33,8 +18,8 @@ beforeEach(() => {
 //
 
 test('returns false if target user does not exist for admin actions', () => {
-  const user = createTestUser({ isAdmin: true }, db);
-  const command = createTestPointsCommand();
+  const user = createTestUser(db, { isAdmin: true });
+  const command = createTestCommand(PointsCommand.defaultConfig, db);
 
   const result = PointsCommand.execute(user, ['add', '@nonexistent', '50'], command, db, bot);
   expect(result).toBe(false);
@@ -42,8 +27,8 @@ test('returns false if target user does not exist for admin actions', () => {
 });
 
 test('returns points info if modifier is missing', () => {
-  const user = createTestUser({}, db);
-  const command = createTestPointsCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(PointsCommand.defaultConfig, db);
 
   const result = PointsCommand.execute(user, [], command, db, bot);
   expect(result).toBe(true);
@@ -51,8 +36,8 @@ test('returns points info if modifier is missing', () => {
 });
 
 test('returns points info if user is not admin and tries add/set/remove', () => {
-  const user = createTestUser({}, db);
-  const command = createTestPointsCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(PointsCommand.defaultConfig, db);
 
   const result = PointsCommand.execute(user, ['add', '@Tester', '50'], command, db, bot);
   expect(result).toBe(true);
@@ -64,9 +49,9 @@ test('returns points info if user is not admin and tries add/set/remove', () => 
 //
 
 test('admin can add points to a user', () => {
-  const user = createTestUser({ isAdmin: true }, db);
-  const command = createTestPointsCommand();
-  const target = createTestUser({ username: 'TargerUser', points: 50 }, db);
+  const user = createTestUser(db, { isAdmin: true });
+  const command = createTestCommand(PointsCommand.defaultConfig, db);
+  const target = createTestUser(db, { username: 'TargerUser', points: 50 });
 
   const result = PointsCommand.execute(user, ['add', `@${target.username}`, '25'], command, db, bot);
   expect(result).toBe(true);
@@ -74,9 +59,9 @@ test('admin can add points to a user', () => {
 });
 
 test('admin can set points for a user', () => {
-  const user = createTestUser({ isAdmin: true }, db);
-  const command = createTestPointsCommand();
-  const target = createTestUser({ username: 'TargerUser', points: 50 }, db);
+  const user = createTestUser(db, { isAdmin: true });
+  const command = createTestCommand(PointsCommand.defaultConfig, db);
+  const target = createTestUser(db, { username: 'TargerUser', points: 50 });
 
   const result = PointsCommand.execute(user, ['set', `@${target.username}`, '200'], command, db, bot);
   expect(result).toBe(true);
@@ -84,9 +69,9 @@ test('admin can set points for a user', () => {
 });
 
 test('admin can remove points from a user', () => {
-  const user = createTestUser({ isAdmin: true }, db);
-  const command = createTestPointsCommand();
-  const target = createTestUser({ username: 'TargerUser', points: 50 }, db);
+  const user = createTestUser(db, { isAdmin: true });
+  const command = createTestCommand(PointsCommand.defaultConfig, db);
+  const target = createTestUser(db, { username: 'TargerUser', points: 50 });
 
   const result = PointsCommand.execute(user, ['remove', `@${target.username}`, '20'], command, db, bot);
   expect(result).toBe(true);
@@ -94,8 +79,8 @@ test('admin can remove points from a user', () => {
 });
 
 test('streamer can reset points and logs', () => {
-  const user = createTestUser({ isStreamer: true }, db);
-  const command = createTestPointsCommand();
+  const user = createTestUser(db, { isStreamer: true });
+  const command = createTestCommand(PointsCommand.defaultConfig, db);
 
   const result = PointsCommand.execute(user, ['reset'], command, db, bot);
   expect(result).toBe(true);
@@ -104,12 +89,12 @@ test('streamer can reset points and logs', () => {
 });
 
 test('any user can view top users', () => {
-  const user = createTestUser({}, db);
-  const command = createTestPointsCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(PointsCommand.defaultConfig, db);
 
-  createTestUser({ username: 'Alice', points: 200 }, db);
-  createTestUser({ username: 'Bob', points: 50 }, db);
-  createTestUser({ username: 'Charlie', points: 150 }, db);
+  createTestUser(db, { username: 'Alice', points: 200 });
+  createTestUser(db, { username: 'Bob', points: 50 });
+  createTestUser(db, { username: 'Charlie', points: 150 });
 
   const result = PointsCommand.execute(user, ['top'], command, db, bot);
   expect(result).toBe(true);
@@ -117,8 +102,8 @@ test('any user can view top users', () => {
 });
 
 test('sends correct points message based on thresholds', () => {
-  const user = createTestUser({ points: 600 }, db);
-  const command = createTestPointsCommand();
+  const user = createTestUser(db, { points: 600 });
+  const command = createTestCommand(PointsCommand.defaultConfig, db);
 
   const result = PointsCommand.execute(user, ['info'], command, db, bot);
   expect(result).toBe(true);
@@ -126,8 +111,8 @@ test('sends correct points message based on thresholds', () => {
 });
 
 test('returns false if no points message matches', () => {
-  const user = createTestUser({ points: -10 }, db);
-  const command = createTestPointsCommand();
+  const user = createTestUser(db, { points: -10 });
+  const command = createTestCommand(PointsCommand.defaultConfig, db);
 
   const result = PointsCommand.execute(user, ['info'], command, db, bot);
   expect(result).toBe(false);

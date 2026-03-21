@@ -1,25 +1,12 @@
-import { test, expect, beforeEach, mock } from 'bun:test';
+import { test, expect, beforeEach } from 'bun:test';
 import { MessageCommand } from '../../commands/Message';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
 import { createTestUser } from '../utils/User';
-import { Command, IMessageCommand } from '../../types/models/Command';
+import { createTestCommand } from '../utils/Command';
 
 let db: ReturnType<typeof createMockDb>;
 let bot: ReturnType<typeof createMockBot>;
-
-// helper to create a message command
-const createTestMessageCommand = (overrides?: Partial<Command<IMessageCommand>>): Command<IMessageCommand> => ({
-  ...MessageCommand.defaultConfig,
-  id: 1,
-  createdAt: new Date(0),
-  updatedAt: new Date(0),
-  ...overrides,
-  opts: {
-    ...MessageCommand.defaultConfig.opts,
-    ...(overrides?.opts ?? {}),
-  },
-});
 
 beforeEach(() => {
   db = createMockDb();
@@ -31,8 +18,8 @@ beforeEach(() => {
 //
 
 test('returns false if message contains unreplaced $target', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestMessageCommand({ opts: { message: 'Hello $target1 $target2' } });
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(MessageCommand.defaultConfig, db, { opts: { message: 'Hello $target1 $target2' } });
 
   expect(MessageCommand.execute(user, ['Alice'], cmd, db, bot)).toBe(false);
   expect(bot.send).not.toHaveBeenCalled();
@@ -43,8 +30,8 @@ test('returns false if message contains unreplaced $target', () => {
 //
 
 test('replaces $user and $target1 correctly', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestMessageCommand({ opts: { message: '$user slapped $target1' } });
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(MessageCommand.defaultConfig, db, { opts: { message: '$user slapped $target1' } });
 
   MessageCommand.execute(user, ['@Alice'], cmd, db, bot);
 
@@ -52,8 +39,10 @@ test('replaces $user and $target1 correctly', () => {
 });
 
 test('replaces multiple targets correctly', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestMessageCommand({ opts: { message: '$user attacked $target1 and $target2' } });
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(MessageCommand.defaultConfig, db, {
+    opts: { message: '$user attacked $target1 and $target2' },
+  });
 
   MessageCommand.execute(user, ['@Alice', '@Bob'], cmd, db, bot);
 
@@ -61,8 +50,8 @@ test('replaces multiple targets correctly', () => {
 });
 
 test('removes @ from targets', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestMessageCommand({ opts: { message: '$user greeted $target1' } });
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(MessageCommand.defaultConfig, db, { opts: { message: '$user greeted $target1' } });
 
   MessageCommand.execute(user, ['@Charlie'], cmd, db, bot);
 
@@ -70,8 +59,8 @@ test('removes @ from targets', () => {
 });
 
 test('works if no @ in target', () => {
-  const user = createTestUser({}, db);
-  const cmd = createTestMessageCommand({ opts: { message: '$user greeted $target1' } });
+  const user = createTestUser(db, {});
+  const cmd = createTestCommand(MessageCommand.defaultConfig, db, { opts: { message: '$user greeted $target1' } });
 
   MessageCommand.execute(user, ['David'], cmd, db, bot);
 

@@ -1,13 +1,12 @@
 import { test, expect, beforeEach, mock } from 'bun:test';
+import { env } from '../../utils/Config';
 import { TriviaCommand } from '../../commands/Trivia';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
 import { createTestUser } from '../utils/User';
-import { Command, ITriviaCommand } from '../../types/models/Command';
-import { env } from '../../utils/Config';
-import { Cron, ICron, TriviaCronOptions, TriviaCronType } from '../../types/models/Cron';
-import { CronActions } from '../../types/utils/DB';
+import { Cron, TriviaCronType } from '../../types/models/Cron';
 import { TriviaCron } from '../../crons/Trivia';
+import { createTestCommand } from '../utils/Command';
 
 let db: ReturnType<typeof createMockDb>;
 let bot: ReturnType<typeof createMockBot>;
@@ -18,20 +17,6 @@ beforeEach(() => {
 
   env.botCurrencyName = 'coins';
 });
-
-const createTestTriviaCommand = (overrides?: Partial<Command<ITriviaCommand>>): Command<ITriviaCommand> => {
-  return {
-    ...TriviaCommand.defaultConfig,
-    id: 1,
-    createdAt: new Date(0),
-    updatedAt: new Date(0),
-    ...overrides,
-    opts: {
-      ...TriviaCommand.defaultConfig.opts,
-      ...(overrides?.opts ?? {}),
-    },
-  };
-};
 
 const setupTriviaCron = (overrides?: Partial<TriviaCronType>): Cron<TriviaCronType> => {
   const cron: Cron<TriviaCronType> = {
@@ -60,8 +45,8 @@ const setupTriviaCron = (overrides?: Partial<TriviaCronType>): Cron<TriviaCronTy
 //
 
 test('returns false if user has insufficient points', () => {
-  const user = createTestUser({ points: 0 }, db);
-  const command = createTestTriviaCommand({ cost: 10 });
+  const user = createTestUser(db, { points: 0 });
+  const command = createTestCommand(TriviaCommand.defaultConfig, db, { cost: 10 });
 
   const result = TriviaCommand.execute(user, ['4'], command, db, bot);
 
@@ -70,8 +55,8 @@ test('returns false if user has insufficient points', () => {
 });
 
 test('returns false if trivia is not ready', () => {
-  const user = createTestUser({}, db);
-  const command = createTestTriviaCommand();
+  const user = createTestUser(db, {});
+  const command = createTestCommand(TriviaCommand.defaultConfig, db);
 
   setupTriviaCron({ opts: { question: undefined, answers: undefined, prize: undefined, previousQuestions: {} } });
 
@@ -86,8 +71,8 @@ test('returns false if trivia is not ready', () => {
 //
 
 test('correct answer rewards user and sends message', () => {
-  const user = createTestUser({ points: 100 }, db);
-  const command = createTestTriviaCommand();
+  const user = createTestUser(db, { points: 100 });
+  const command = createTestCommand(TriviaCommand.defaultConfig, db);
 
   const cron = setupTriviaCron();
 
@@ -110,8 +95,8 @@ test('correct answer rewards user and sends message', () => {
 //
 
 test('wrong answer deducts cost and sends message', () => {
-  const user = createTestUser({ points: 100 }, db);
-  const command = createTestTriviaCommand({ cost: 10 });
+  const user = createTestUser(db, { points: 100 });
+  const command = createTestCommand(TriviaCommand.defaultConfig, db, { cost: 10 });
 
   setupTriviaCron();
 
@@ -124,9 +109,9 @@ test('wrong answer deducts cost and sends message', () => {
 });
 
 test('does not send message when losing and showMessages.lost = false', () => {
-  const user = createTestUser({ points: 100 }, db);
+  const user = createTestUser(db, { points: 100 });
 
-  const command = createTestTriviaCommand({
+  const command = createTestCommand(TriviaCommand.defaultConfig, db, {
     opts: {
       ...TriviaCommand.defaultConfig.opts,
       showMessages: {
@@ -148,9 +133,9 @@ test('does not send message when losing and showMessages.lost = false', () => {
 //
 
 test('replaces template variables correctly', () => {
-  const user = createTestUser({}, db);
+  const user = createTestUser(db, {});
 
-  const command = createTestTriviaCommand({
+  const command = createTestCommand(TriviaCommand.defaultConfig, db, {
     opts: {
       ...TriviaCommand.defaultConfig.opts,
       messages: {
@@ -174,9 +159,9 @@ test('replaces template variables correctly', () => {
 //
 
 test('uses fixed interval when newQuestionOnAnswer is true', () => {
-  const user = createTestUser({}, db);
+  const user = createTestUser(db, {});
 
-  const command = createTestTriviaCommand({
+  const command = createTestCommand(TriviaCommand.defaultConfig, db, {
     opts: {
       ...TriviaCommand.defaultConfig.opts,
       newQuestionOnAnswer: true,
@@ -191,9 +176,9 @@ test('uses fixed interval when newQuestionOnAnswer is true', () => {
 });
 
 test('uses random interval when newQuestionOnAnswer is false', () => {
-  const user = createTestUser({}, db);
+  const user = createTestUser(db, {});
 
-  const command = createTestTriviaCommand({
+  const command = createTestCommand(TriviaCommand.defaultConfig, db, {
     opts: {
       ...TriviaCommand.defaultConfig.opts,
       newQuestionOnAnswer: false,
