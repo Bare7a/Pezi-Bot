@@ -24,7 +24,7 @@ export const createTestUser = (db: DbActions & { state: MockDbState }, overrides
     createdAt: new Date(),
     updatedAt: new Date(),
 
-    ...overrides,
+    ...structuredClone(overrides),
   };
 
   db.state.users.set(user.userId, user);

@@ -17,18 +17,18 @@ beforeEach(() => {
 });
 
 const createUserBets = (db: ReturnType<typeof createMockDb>, userBets: { cost: number; points: number }[]) =>
-  (db.Log.getUserBets = mock(() =>
+  db.Log.insertBulk(
     userBets.map(({ cost, points }) => ({
       id: 1,
       cost,
       points,
-      userId: 'Tester',
+      userId: 'tester',
       type: 'SLOTS',
       allPoints: 15,
       createdAt: new Date(),
       updatedAt: new Date(),
     })),
-  ));
+  );
 
 //
 // ❌ EDGE CASES
@@ -36,7 +36,7 @@ const createUserBets = (db: ReturnType<typeof createMockDb>, userBets: { cost: n
 
 test('handles no logs (zero stake and profit)', () => {
   const user = createTestUser(db, {});
-  const command = createTestCommand(StatsCommand.defaultConfig, db);
+  const command = createTestCommand(db, StatsCommand.defaultConfig);
 
   db.Log.getUserBets = mock(() => []);
 
@@ -53,7 +53,7 @@ test('handles no logs (zero stake and profit)', () => {
 
 test('sends positive message when profit >= 0', () => {
   const user = createTestUser(db, {});
-  const command = createTestCommand(StatsCommand.defaultConfig, db);
+  const command = createTestCommand(db, StatsCommand.defaultConfig);
 
   createUserBets(db, [
     { cost: 10, points: 5 },
@@ -74,7 +74,7 @@ test('sends positive message when profit >= 0', () => {
 
 test('sends negative message when profit < 0', () => {
   const user = createTestUser(db, {});
-  const command = createTestCommand(StatsCommand.defaultConfig, db);
+  const command = createTestCommand(db, StatsCommand.defaultConfig);
 
   createUserBets(db, [
     { cost: 10, points: -5 },
@@ -96,7 +96,7 @@ test('sends negative message when profit < 0', () => {
 test('replaces template variables correctly', () => {
   const user = createTestUser(db, {});
 
-  const command = createTestCommand(StatsCommand.defaultConfig, db, {
+  const command = createTestCommand(db, StatsCommand.defaultConfig, {
     opts: {
       messages: {
         positive: '$user profit: $profit / stake: $stake $currency',
@@ -118,7 +118,7 @@ test('replaces template variables correctly', () => {
 
 test('correctly aggregates multiple logs', () => {
   const user = createTestUser(db, {});
-  const command = createTestCommand(StatsCommand.defaultConfig, db);
+  const command = createTestCommand(db, StatsCommand.defaultConfig);
 
   createUserBets(db, [
     { cost: 10, points: -5 },

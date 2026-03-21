@@ -46,7 +46,7 @@ const setupTriviaCron = (overrides?: Partial<TriviaCronType>): Cron<TriviaCronTy
 
 test('returns false if user has insufficient points', () => {
   const user = createTestUser(db, { points: 0 });
-  const command = createTestCommand(TriviaCommand.defaultConfig, db, { cost: 10 });
+  const command = createTestCommand(db, TriviaCommand.defaultConfig, { cost: 10 });
 
   const result = TriviaCommand.execute(user, ['4'], command, db, bot);
 
@@ -56,7 +56,7 @@ test('returns false if user has insufficient points', () => {
 
 test('returns false if trivia is not ready', () => {
   const user = createTestUser(db, {});
-  const command = createTestCommand(TriviaCommand.defaultConfig, db);
+  const command = createTestCommand(db, TriviaCommand.defaultConfig);
 
   setupTriviaCron({ opts: { question: undefined, answers: undefined, prize: undefined, previousQuestions: {} } });
 
@@ -72,7 +72,7 @@ test('returns false if trivia is not ready', () => {
 
 test('correct answer rewards user and sends message', () => {
   const user = createTestUser(db, { points: 100 });
-  const command = createTestCommand(TriviaCommand.defaultConfig, db);
+  const command = createTestCommand(db, TriviaCommand.defaultConfig);
 
   const cron = setupTriviaCron();
 
@@ -96,7 +96,7 @@ test('correct answer rewards user and sends message', () => {
 
 test('wrong answer deducts cost and sends message', () => {
   const user = createTestUser(db, { points: 100 });
-  const command = createTestCommand(TriviaCommand.defaultConfig, db, { cost: 10 });
+  const command = createTestCommand(db, TriviaCommand.defaultConfig, { cost: 10 });
 
   setupTriviaCron();
 
@@ -111,7 +111,7 @@ test('wrong answer deducts cost and sends message', () => {
 test('does not send message when losing and showMessages.lost = false', () => {
   const user = createTestUser(db, { points: 100 });
 
-  const command = createTestCommand(TriviaCommand.defaultConfig, db, {
+  const command = createTestCommand(db, TriviaCommand.defaultConfig, {
     opts: {
       ...TriviaCommand.defaultConfig.opts,
       showMessages: {
@@ -135,7 +135,7 @@ test('does not send message when losing and showMessages.lost = false', () => {
 test('replaces template variables correctly', () => {
   const user = createTestUser(db, {});
 
-  const command = createTestCommand(TriviaCommand.defaultConfig, db, {
+  const command = createTestCommand(db, TriviaCommand.defaultConfig, {
     opts: {
       ...TriviaCommand.defaultConfig.opts,
       messages: {
@@ -161,7 +161,7 @@ test('replaces template variables correctly', () => {
 test('uses fixed interval when newQuestionOnAnswer is true', () => {
   const user = createTestUser(db, {});
 
-  const command = createTestCommand(TriviaCommand.defaultConfig, db, {
+  const command = createTestCommand(db, TriviaCommand.defaultConfig, {
     opts: {
       ...TriviaCommand.defaultConfig.opts,
       newQuestionOnAnswer: true,
@@ -178,7 +178,7 @@ test('uses fixed interval when newQuestionOnAnswer is true', () => {
 test('uses random interval when newQuestionOnAnswer is false', () => {
   const user = createTestUser(db, {});
 
-  const command = createTestCommand(TriviaCommand.defaultConfig, db, {
+  const command = createTestCommand(db, TriviaCommand.defaultConfig, {
     opts: {
       ...TriviaCommand.defaultConfig.opts,
       newQuestionOnAnswer: false,

@@ -3,9 +3,10 @@ import { RaffleCommand } from '../../commands/Raffle';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
 import { createTestUser } from '../utils/User';
-import { RaffleCronType, Cron } from '../../types/models/Cron';
 import { RaffleCron } from '../../crons/Raffle';
 import { createTestCommand } from '../utils/Command';
+import { createTestCron } from '../utils/Cron';
+import { env } from '../../utils/Config';
 
 let db: ReturnType<typeof createMockDb>;
 let bot: ReturnType<typeof createMockBot>;
@@ -13,36 +14,8 @@ let bot: ReturnType<typeof createMockBot>;
 beforeEach(() => {
   db = createMockDb();
   bot = createMockBot();
+  env.botCurrencyName = 'coins';
 });
-
-const setupRaffleCron = (overrides?: Partial<RaffleCronType>): Cron<RaffleCronType> => {
-  const cron: Cron<RaffleCronType> = {
-    ...RaffleCron.defaultConfig,
-    id: 1,
-    type: 'RAFFLE',
-    interval: 0,
-    isEnabled: true,
-    isExecuting: false,
-    isLogEnabled: true,
-    lastCalledAt: new Date(0),
-    callAt: new Date(0),
-    createdAt: new Date(0),
-    updatedAt: new Date(0),
-    ...overrides,
-    opts: {
-      ...RaffleCron.defaultConfig.opts,
-      pot: 0,
-      userList: [],
-      isBettingOpened: true,
-      ...(overrides?.opts ?? {}),
-    },
-  };
-
-  db.Cron.fetch = mock(() => cron);
-  db.Cron.update = mock(() => cron);
-
-  return cron;
-};
 
 //
 // ❌ INVALID CASES
@@ -50,9 +23,9 @@ const setupRaffleCron = (overrides?: Partial<RaffleCronType>): Cron<RaffleCronTy
 
 test('returns false for invalid bet amount', () => {
   const user = createTestUser(db, { points: 100 });
-  const command = createTestCommand(RaffleCommand.defaultConfig, db);
+  const command = createTestCommand(db, RaffleCommand.defaultConfig);
 
-  setupRaffleCron();
+  createTestCron(db, RaffleCron.defaultConfig);
 
   const result = RaffleCommand.execute(user, ['0'], command, db, bot);
 
@@ -63,9 +36,9 @@ test('returns false for invalid bet amount', () => {
 
 test('returns false if bet is higher than user points', () => {
   const user = createTestUser(db, { points: 10 });
-  const command = createTestCommand(RaffleCommand.defaultConfig, db);
+  const command = createTestCommand(db, RaffleCommand.defaultConfig);
 
-  setupRaffleCron();
+  createTestCron(db, RaffleCron.defaultConfig);
 
   const result = RaffleCommand.execute(user, ['50'], command, db, bot);
 
@@ -75,9 +48,9 @@ test('returns false if bet is higher than user points', () => {
 
 test('returns false if betting is not opened', () => {
   const user = createTestUser(db, { points: 100 });
-  const command = createTestCommand(RaffleCommand.defaultConfig, db);
+  const command = createTestCommand(db, RaffleCommand.defaultConfig);
 
-  setupRaffleCron({ opts: { isBettingOpened: false, pot: 0, userList: [] } });
+  createTestCron(db, RaffleCron.defaultConfig, { opts: { isBettingOpened: false, pot: 0, userList: [] } });
 
   const result = RaffleCommand.execute(user, ['10'], command, db, bot);
 
@@ -87,9 +60,11 @@ test('returns false if betting is not opened', () => {
 
 test('returns false if user already bet', () => {
   const user = createTestUser(db, { points: 100 });
-  const command = createTestCommand(RaffleCommand.defaultConfig, db);
+  const command = createTestCommand(db, RaffleCommand.defaultConfig);
 
-  setupRaffleCron({ opts: { isBettingOpened: false, pot: 0, userList: [[user.userId, 10]] } });
+  createTestCron(db, RaffleCron.defaultConfig, {
+    opts: { isBettingOpened: false, pot: 0, userList: [[user.userId, 10]] },
+  });
 
   const result = RaffleCommand.execute(user, ['10'], command, db, bot);
 
@@ -103,9 +78,11 @@ test('returns false if user already bet', () => {
 
 test('successful bet updates DB and cron correctly', () => {
   const user = createTestUser(db, { points: 100 });
-  const command = createTestCommand(RaffleCommand.defaultConfig, db);
+  const command = createTestCommand(db, RaffleCommand.defaultConfig);
 
-  const cron = setupRaffleCron();
+  const cron = createTestCron(db, RaffleCron.defaultConfig, {
+    opts: { ...RaffleCron.defaultConfig.opts, isBettingOpened: true },
+  });
 
   const result = RaffleCommand.execute(user, ['10'], command, db, bot);
 
@@ -131,14 +108,16 @@ test('successful bet updates DB and cron correctly', () => {
 test('replaces template variables correctly', () => {
   const user = createTestUser(db, { points: 100 });
 
-  const command = createTestCommand(RaffleCommand.defaultConfig, db, {
+  const command = createTestCommand(db, RaffleCommand.defaultConfig, {
     opts: {
       ...RaffleCommand.defaultConfig.opts,
       messages: { ...RaffleCommand.defaultConfig.opts.messages, userBetted: '$user bet $bet ($min-$max) $currency' },
     },
   });
 
-  setupRaffleCron();
+  createTestCron(db, RaffleCron.defaultConfig, {
+    opts: { ...RaffleCron.defaultConfig.opts, isBettingOpened: true },
+  });
 
   RaffleCommand.execute(user, ['15'], command, db, bot);
 
@@ -152,14 +131,16 @@ test('replaces template variables correctly', () => {
 test('does not send message if showMessages.userBetted is false', () => {
   const user = createTestUser(db, { points: 100 });
 
-  const command = createTestCommand(RaffleCommand.defaultConfig, db, {
+  const command = createTestCommand(db, RaffleCommand.defaultConfig, {
     opts: {
       ...RaffleCommand.defaultConfig.opts,
       showMessages: { ...RaffleCommand.defaultConfig.opts.showMessages, userBetted: false },
     },
   });
 
-  setupRaffleCron();
+  createTestCron(db, RaffleCron.defaultConfig, {
+    opts: { ...RaffleCron.defaultConfig.opts, isBettingOpened: true },
+  });
 
   RaffleCommand.execute(user, ['10'], command, db, bot);
 

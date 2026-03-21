@@ -21,7 +21,7 @@ beforeEach(() => {
 
 test('returns false if missing modifier or command name', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(CmdCommand.defaultConfig, db);
+  const cmd = createTestCommand(db, CmdCommand.defaultConfig);
 
   expect(CmdCommand.execute(user, [], cmd, db, bot)).toBe(false);
   expect(CmdCommand.execute(user, ['enable'], cmd, db, bot)).toBe(false);
@@ -30,7 +30,7 @@ test('returns false if missing modifier or command name', () => {
 
 test('returns false if target command not found', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(CmdCommand.defaultConfig, db);
+  const cmd = createTestCommand(db, CmdCommand.defaultConfig);
 
   expect(CmdCommand.execute(user, ['enable', 'nonexistent'], cmd, db, bot)).toBe(false);
   expect(bot.send).not.toHaveBeenCalled();
@@ -38,8 +38,8 @@ test('returns false if target command not found', () => {
 
 test('returns false if target command is ADMIN', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(CmdCommand.defaultConfig, db);
-  const target = createTestCommand(AdminCommand.defaultConfig, db);
+  const cmd = createTestCommand(db, CmdCommand.defaultConfig);
+  const target = createTestCommand(db, AdminCommand.defaultConfig);
 
   expect(CmdCommand.execute(user, ['enable', target.name], cmd, db, bot)).toBe(false);
   expect(bot.send).not.toHaveBeenCalled();
@@ -51,8 +51,8 @@ test('returns false if target command is ADMIN', () => {
 
 test('enable modifier sets command to enabled and sends message', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(CmdCommand.defaultConfig, db);
-  const target = createTestCommand(NoteCommand.defaultConfig, db, { isEnabled: false });
+  const cmd = createTestCommand(db, CmdCommand.defaultConfig);
+  const target = createTestCommand(db, NoteCommand.defaultConfig, { isEnabled: false });
 
   CmdCommand.execute(user, ['enable', target.name], cmd, db, bot);
 
@@ -62,8 +62,8 @@ test('enable modifier sets command to enabled and sends message', () => {
 
 test('disable modifier sets command to disabled and sends message', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(CmdCommand.defaultConfig, db);
-  const target = createTestCommand(NoteCommand.defaultConfig, db, { isEnabled: true });
+  const cmd = createTestCommand(db, CmdCommand.defaultConfig);
+  const target = createTestCommand(db, NoteCommand.defaultConfig, { isEnabled: true });
 
   CmdCommand.execute(user, ['disable', target.name], cmd, db, bot);
 
@@ -73,8 +73,8 @@ test('disable modifier sets command to disabled and sends message', () => {
 
 test('ucd modifier updates userCd and sends message', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(CmdCommand.defaultConfig, db);
-  const target = createTestCommand(NoteCommand.defaultConfig, db, { userCd: 0 });
+  const cmd = createTestCommand(db, CmdCommand.defaultConfig);
+  const target = createTestCommand(db, NoteCommand.defaultConfig, { userCd: 0 });
 
   CmdCommand.execute(user, ['ucd', target.name, '30'], cmd, db, bot);
 
@@ -84,8 +84,8 @@ test('ucd modifier updates userCd and sends message', () => {
 
 test('gcd modifier updates globalCd and sends message', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(CmdCommand.defaultConfig, db);
-  const target = createTestCommand(NoteCommand.defaultConfig, db, { globalCd: 0 });
+  const cmd = createTestCommand(db, CmdCommand.defaultConfig);
+  const target = createTestCommand(db, NoteCommand.defaultConfig, { globalCd: 0 });
 
   CmdCommand.execute(user, ['gcd', target.name, '45'], cmd, db, bot);
 

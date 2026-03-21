@@ -32,7 +32,7 @@ beforeEach(() => {
 
 test('returns false if user has insufficient points', () => {
   const user = createTestUser(db, { points: 5 });
-  const command = createTestCommand(FlipCommand.defaultConfig, db, { cost: 10 });
+  const command = createTestCommand(db, FlipCommand.defaultConfig, { cost: 10 });
 
   const result = FlipCommand.execute(user, [], command, db, bot);
 
@@ -44,7 +44,7 @@ test('returns false if user has insufficient points', () => {
 
 test('returns false if cost is 0', () => {
   const user = createTestUser(db, {});
-  const command = createTestCommand(FlipCommand.defaultConfig, db, { cost: 0 });
+  const command = createTestCommand(db, FlipCommand.defaultConfig, { cost: 0 });
 
   const result = FlipCommand.execute(user, [], command, db, bot);
 
@@ -60,7 +60,7 @@ test('losing flip deducts points and sends correct message', () => {
   Math.random = mock(() => 0.2);
 
   const user = createTestUser(db, {});
-  const command = createTestCommand(FlipCommand.defaultConfig, db);
+  const command = createTestCommand(db, FlipCommand.defaultConfig);
 
   FlipCommand.execute(user, [], command, db, bot);
 
@@ -77,7 +77,7 @@ test('winning flip adds points and sends correct message', () => {
   Math.random = mock(() => 0.9);
 
   const user = createTestUser(db, {});
-  const command = createTestCommand(FlipCommand.defaultConfig, db);
+  const command = createTestCommand(db, FlipCommand.defaultConfig);
 
   FlipCommand.execute(user, [], command, db, bot);
 
@@ -95,7 +95,7 @@ test('replaces all template variables correctly', () => {
 
   const user = createTestUser(db, {});
 
-  const command = createTestCommand(FlipCommand.defaultConfig, db, {
+  const command = createTestCommand(db, FlipCommand.defaultConfig, {
     opts: {
       multi: 3,
       messages: {
@@ -114,7 +114,7 @@ test('uses custom cost from params', () => {
   Math.random = mock(() => 0.9);
 
   const user = createTestUser(db, {});
-  const command = createTestCommand(FlipCommand.defaultConfig, db, { customCost: true });
+  const command = createTestCommand(db, FlipCommand.defaultConfig, { customCost: true });
 
   FlipCommand.execute(user, ['25'], command, db, bot);
 
@@ -126,7 +126,7 @@ test('calls addPoints with correct values', () => {
   Math.random = mock(() => 0.9);
 
   const user = createTestUser(db, {});
-  const command = createTestCommand(FlipCommand.defaultConfig, db);
+  const command = createTestCommand(db, FlipCommand.defaultConfig);
 
   FlipCommand.execute(user, [], command, db, bot);
 

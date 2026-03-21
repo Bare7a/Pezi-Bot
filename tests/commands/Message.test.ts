@@ -19,7 +19,7 @@ beforeEach(() => {
 
 test('returns false if message contains unreplaced $target', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(MessageCommand.defaultConfig, db, { opts: { message: 'Hello $target1 $target2' } });
+  const cmd = createTestCommand(db, MessageCommand.defaultConfig, { opts: { message: 'Hello $target1 $target2' } });
 
   expect(MessageCommand.execute(user, ['Alice'], cmd, db, bot)).toBe(false);
   expect(bot.send).not.toHaveBeenCalled();
@@ -31,7 +31,7 @@ test('returns false if message contains unreplaced $target', () => {
 
 test('replaces $user and $target1 correctly', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(MessageCommand.defaultConfig, db, { opts: { message: '$user slapped $target1' } });
+  const cmd = createTestCommand(db, MessageCommand.defaultConfig, { opts: { message: '$user slapped $target1' } });
 
   MessageCommand.execute(user, ['@Alice'], cmd, db, bot);
 
@@ -40,7 +40,7 @@ test('replaces $user and $target1 correctly', () => {
 
 test('replaces multiple targets correctly', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(MessageCommand.defaultConfig, db, {
+  const cmd = createTestCommand(db, MessageCommand.defaultConfig, {
     opts: { message: '$user attacked $target1 and $target2' },
   });
 
@@ -51,7 +51,7 @@ test('replaces multiple targets correctly', () => {
 
 test('removes @ from targets', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(MessageCommand.defaultConfig, db, { opts: { message: '$user greeted $target1' } });
+  const cmd = createTestCommand(db, MessageCommand.defaultConfig, { opts: { message: '$user greeted $target1' } });
 
   MessageCommand.execute(user, ['@Charlie'], cmd, db, bot);
 
@@ -60,7 +60,7 @@ test('removes @ from targets', () => {
 
 test('works if no @ in target', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(MessageCommand.defaultConfig, db, { opts: { message: '$user greeted $target1' } });
+  const cmd = createTestCommand(db, MessageCommand.defaultConfig, { opts: { message: '$user greeted $target1' } });
 
   MessageCommand.execute(user, ['David'], cmd, db, bot);
 

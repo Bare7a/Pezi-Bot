@@ -2,35 +2,54 @@ import { mock } from 'bun:test';
 import { User } from '../../types/models/User';
 import { DbActions } from '../../types/utils/DB';
 import { Command, ICommand } from '../../types/models/Command';
+import { Cron, ICron } from '../../types/models/Cron';
 
 export type MockDbState = {
+  crons: Map<string, Cron<ICron>>;
   users: Map<string, User>;
   commands: Map<string, Command<ICommand>>;
+  logs: Map<number, any>;
 };
 
 export const createMockDb = (initial?: Partial<MockDbState>): DbActions & { state: MockDbState } => {
   const state: MockDbState = {
+    crons: new Map(),
     users: new Map(),
     commands: new Map(),
+    logs: new Map(),
     ...initial,
   };
 
   const User = {
     sync: mock((u) => u),
+
     update: mock((user: User) => {
       state.users.set(user.userId, user);
       return user;
     }),
+
     reset: mock(() => {
       state.users.clear();
       return [];
     }),
-    getRole: mock(() => 'member' as const),
+
+    getRole: mock((user: User) => {
+      if (user.isStreamer) return 'streamer';
+      if (user.isAdmin) return 'admin';
+      if (user.isMod) return 'mod';
+      if (user.isVip) return 'vip';
+      if (user.isSub) return 'sub';
+      return 'member';
+    }),
+
     getById: mock((id: string) => state.users.get(id) || null),
+
     getByIds: mock((ids: string[]) => ids.map((id) => state.users.get(id)).filter((u): u is User => u !== undefined)),
+
     getByUsername: mock((username: string) => {
       return [...state.users.values()].find((u) => u.username === username) || null;
     }),
+
     getTopUsers: mock(() => [...state.users.values()].sort((a, b) => b.points - a.points)),
 
     addAsChatter: mock(() => true),
@@ -109,25 +128,71 @@ export const createMockDb = (initial?: Partial<MockDbState>): DbActions & { stat
   };
 
   const Log = {
-    reset: mock(() => {}),
-    insert: mock(() => {
-      return {
-        id: 1,
-      } as any;
+    reset: mock(() => {
+      state.logs.clear();
     }),
-    insertBulk: mock(() => {}),
-    getUserBets: mock(() => []),
+
+    insert: mock((type: string, userId: string, cost: number, points: number, allPoints: number) => {
+      const id = state.logs.size + 1;
+
+      const log = {
+        id,
+        type,
+        userId,
+        cost,
+        points,
+        allPoints,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      state.logs.set(id, log);
+      return log;
+    }),
+
+    insertBulk: mock((logs: any[]) => {
+      logs.forEach((log) => {
+        const id = state.logs.size + 1;
+
+        state.logs.set(id, {
+          ...log,
+          id,
+          createdAt: log.createdAt ?? new Date(),
+          updatedAt: log.updatedAt ?? new Date(),
+        });
+      });
+    }),
+
+    getUserBets: mock((userId: string) => {
+      return [...state.logs.values()].filter((log) => log.userId === userId && log.type !== 'REWARD');
+    }),
   };
 
   const Cron = {
-    fetch: mock(() => {
-      throw new Error('Not implemented');
+    fetch: mock(<T extends ICron>(type: T['type']): Cron<T> => {
+      return state.crons.get(type)!;
     }),
-    update: mock(() => {
-      throw new Error('Not implemented');
+
+    update: mock(<T extends ICron>(name: string, cron: Cron<T>) => {
+      state.crons.set(name, cron);
+      return cron;
     }),
-    isExecutePermited: mock(() => true),
-    getCallAtDate: mock(() => new Date()),
+
+    isExecutePermited: mock(<T extends ICron>(cron: Cron<T>): boolean => {
+      const { callAt, isEnabled, isExecuting } = cron;
+
+      const currentTime = new Date();
+      const isCronTimeAvailable = currentTime > callAt;
+
+      const isExecutionTime = isEnabled && !isExecuting && isCronTimeAvailable;
+      return isExecutionTime;
+    }),
+
+    getCallAtDate: mock(
+      <T extends ICron>(cron: Cron<T>, interval?: number) =>
+        new Date(new Date().getTime() + (interval ?? cron.interval) * 1000),
+    ),
+
     resetExecution: mock(() => {}),
   };
 

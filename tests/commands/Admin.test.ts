@@ -19,7 +19,7 @@ beforeEach(() => {
 
 test('returns false if missing modifier or username', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(AdminCommand.defaultConfig, db);
+  const cmd = createTestCommand(db, AdminCommand.defaultConfig);
 
   expect(AdminCommand.execute(user, [], cmd, db, bot)).toBe(false);
   expect(AdminCommand.execute(user, ['add'], cmd, db, bot)).toBe(false);
@@ -28,7 +28,7 @@ test('returns false if missing modifier or username', () => {
 
 test('returns false if target user not found', () => {
   const user = createTestUser(db, {});
-  const cmd = createTestCommand(AdminCommand.defaultConfig, db);
+  const cmd = createTestCommand(db, AdminCommand.defaultConfig);
 
   expect(AdminCommand.execute(user, ['add', 'nonexistent'], cmd, db, bot)).toBe(false);
   expect(bot.send).not.toHaveBeenCalled();
@@ -37,7 +37,7 @@ test('returns false if target user not found', () => {
 test('returns false if invalid modifier', () => {
   const user = createTestUser(db, {});
   const target = createTestUser(db, { username: 'TargetUser' });
-  const cmd = createTestCommand(AdminCommand.defaultConfig, db);
+  const cmd = createTestCommand(db, AdminCommand.defaultConfig);
 
   expect(AdminCommand.execute(user, ['invalid', target.username], cmd, db, bot)).toBe(false);
   expect(bot.send).not.toHaveBeenCalled();
@@ -50,7 +50,7 @@ test('returns false if invalid modifier', () => {
 test('add modifier sets isAdmin true and sends message', () => {
   const user = createTestUser(db, { username: 'AdminUser' });
   const target = createTestUser(db, { username: 'TargetUser', points: 50 });
-  const cmd = createTestCommand(AdminCommand.defaultConfig, db);
+  const cmd = createTestCommand(db, AdminCommand.defaultConfig);
 
   AdminCommand.execute(user, ['add', target.username], cmd, db, bot);
 
@@ -61,7 +61,7 @@ test('add modifier sets isAdmin true and sends message', () => {
 test('remove modifier sets isAdmin false and sends message', () => {
   const user = createTestUser(db, { username: 'AdminUser' });
   const target = createTestUser(db, { username: 'TargetUser', points: 50 });
-  const cmd = createTestCommand(AdminCommand.defaultConfig, db);
+  const cmd = createTestCommand(db, AdminCommand.defaultConfig);
 
   AdminCommand.execute(user, ['remove', target.username], cmd, db, bot);
 
