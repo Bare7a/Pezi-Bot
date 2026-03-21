@@ -1,3 +1,5 @@
+import { WebSocketEventMap } from 'bun';
+
 export interface TwitchActions {
   send(message: string): void;
   parseMessage(message: string): UserMessage | null;
@@ -7,7 +9,7 @@ export interface TwitchActions {
   addEventListener<T extends keyof WebSocketEventMap>(
     type: T,
     listener: (this: WebSocket, event: WebSocketEventMap[T]) => unknown,
-    options?: boolean | AddEventListenerOptions | undefined
+    options?: boolean | AddEventListenerOptions | undefined,
   ): void;
 }
 

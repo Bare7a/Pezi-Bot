@@ -1,3 +1,4 @@
+import { WebSocketEventMap } from 'bun';
 import { env } from './Config';
 import { TwitchActions, UserMessage } from '../types/utils/Twitch';
 import { TwitchIds, ApiTwitchIds, ApiTwitchStatus, ApiViewersIds } from '../types/utils/Api';
@@ -19,14 +20,14 @@ export class TwitchClient implements TwitchActions {
       const url = `https://api.twitch.tv/helix/users?${params.toString()}`;
 
       const response = await fetch(url, { headers, method: 'GET' });
-      const resData: ApiTwitchIds = await response.json();
+      const resData = (await response.json()) as ApiTwitchIds;
 
       const moderator = resData.data.find((u) => u.login === env.botUsername);
       const broadcaster = resData.data.find((u) => u.login === env.botStreamer);
 
       if (!moderator || !broadcaster) {
         throw Error(
-          `There was an error while fetching:${moderator ? '' : ' moderator'}${broadcaster ? '' : ' broadcaster'}`
+          `There was an error while fetching:${moderator ? '' : ' moderator'}${broadcaster ? '' : ' broadcaster'}`,
         );
       }
 
@@ -51,7 +52,7 @@ export class TwitchClient implements TwitchActions {
   public addEventListener = <T extends keyof WebSocketEventMap>(
     type: T,
     listener: (this: WebSocket, event: WebSocketEventMap[T]) => unknown,
-    options?: boolean | AddEventListenerOptions | undefined
+    options?: boolean | AddEventListenerOptions | undefined,
   ) => this.ws.addEventListener(type, listener, options);
 
   public parseMessage = (message: string): UserMessage | null => {
@@ -101,7 +102,7 @@ export class TwitchClient implements TwitchActions {
       const url = `https://api.twitch.tv/helix/streams?${params.toString()}`;
 
       const res = await fetch(url, { method: 'GET', headers });
-      const resData: ApiTwitchStatus = await res.json();
+      const resData = (await res.json()) as ApiTwitchStatus;
       const data = resData.data[0];
 
       const isOnline = data?.type === 'live';
@@ -130,7 +131,7 @@ export class TwitchClient implements TwitchActions {
         const url = `https://api.twitch.tv/helix/chat/chatters?${params.toString()}`;
 
         const response = await fetch(url, { method: 'GET', headers });
-        const resData: ApiViewersIds = await response.json();
+        const resData = (await response.json()) as ApiViewersIds;
 
         viewers.push(...resData.data.map((u) => u.user_login));
         after = resData.pagination.cursor;
