@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "start": "bun run index.ts",
-    "build": "bun build ./index.ts --compile --outfile ./bin/pezi-bot"
+    "build": "bun build ./index.ts --compile --outfile ./bin/pezi-bot",
+    "test": "bun test --preload ./tests/setup.ts"
   },
   "devDependencies": {
     "bun-types": "latest"
