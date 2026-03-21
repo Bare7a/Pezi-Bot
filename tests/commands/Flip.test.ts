@@ -4,7 +4,6 @@ import { FlipCommand } from '../../commands/Flip';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
 import { createTestUser } from '../utils/User';
-import { env } from '../../utils/Config';
 import { createTestCommand } from '../utils/Command';
 
 let db: ReturnType<typeof createMockDb>;
@@ -13,8 +12,6 @@ let originalRandom: typeof Math.random;
 
 beforeAll(() => {
   originalRandom = Math.random;
-  env.botCurrencyName = 'coins';
-  Math.random = mock(() => 0.5);
 });
 
 afterAll(() => {

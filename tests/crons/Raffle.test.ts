@@ -3,7 +3,6 @@ import { RaffleCron } from '../../crons/Raffle';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
 import { createTestUser } from '../utils/User';
-import { env } from '../../utils/Config';
 import { RaffleCommand } from '../../commands/Raffle';
 import { createTestCron } from '../utils/Cron';
 import { StatusCron } from '../../crons/Status';
@@ -15,7 +14,6 @@ let bot: ReturnType<typeof createMockBot>;
 beforeEach(() => {
   db = createMockDb();
   bot = createMockBot();
-  env.botCurrencyName = 'coins';
 });
 
 //

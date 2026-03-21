@@ -1,5 +1,4 @@
 import { test, expect, beforeEach, mock } from 'bun:test';
-import { env } from '../../utils/Config';
 import { TriviaCommand } from '../../commands/Trivia';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
@@ -14,8 +13,6 @@ let bot: ReturnType<typeof createMockBot>;
 beforeEach(() => {
   db = createMockDb();
   bot = createMockBot();
-
-  env.botCurrencyName = 'coins';
 });
 
 const setupTriviaCron = (overrides?: Partial<TriviaCronType>): Cron<TriviaCronType> => {

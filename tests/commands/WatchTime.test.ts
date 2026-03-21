@@ -1,5 +1,4 @@
 import { test, expect, beforeEach } from 'bun:test';
-import { env } from '../../utils/Config';
 import { WatchTimeCommand } from '../../commands/WatchTime';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
@@ -12,8 +11,6 @@ let bot: ReturnType<typeof createMockBot>;
 beforeEach(() => {
   db = createMockDb();
   bot = createMockBot();
-
-  env.botStreamer = 'pezi';
 });
 
 //
@@ -41,7 +38,7 @@ test('returns true and sends correct watch time (minutes)', () => {
 
   WatchTimeCommand.execute(user, [], command, db, bot);
 
-  expect(bot.send).toHaveBeenCalledWith(`${user.username} has watched pezi for 2 minutes`);
+  expect(bot.send).toHaveBeenCalledWith(`${user.username} has watched bare7a for 2 minutes`);
 });
 
 test('returns correct watch time (hours + minutes)', () => {
@@ -50,7 +47,7 @@ test('returns correct watch time (hours + minutes)', () => {
 
   WatchTimeCommand.execute(user, [], command, db, bot);
 
-  expect(bot.send).toHaveBeenCalledWith(`${user.username} has watched pezi for 1 hours 1 minutes`);
+  expect(bot.send).toHaveBeenCalledWith(`${user.username} has watched bare7a for 1 hours 1 minutes`);
 });
 
 test('returns correct watch time (days + hours + minutes)', () => {
@@ -60,7 +57,7 @@ test('returns correct watch time (days + hours + minutes)', () => {
 
   WatchTimeCommand.execute(user, [], command, db, bot);
 
-  expect(bot.send).toHaveBeenCalledWith(`${user.username} has watched pezi for 1 days 1 hours 1 minutes`);
+  expect(bot.send).toHaveBeenCalledWith(`${user.username} has watched bare7a for 1 days 1 hours 1 minutes`);
 });
 
 test('deducts cost from user', () => {
@@ -102,5 +99,5 @@ test('replaces template variables correctly', () => {
 
   WatchTimeCommand.execute(user, [], command, db, bot);
 
-  expect(bot.send).toHaveBeenCalledWith(`${user.username} watched pezi for 1 minutes total`);
+  expect(bot.send).toHaveBeenCalledWith(`${user.username} watched bare7a for 1 minutes total`);
 });

@@ -1,5 +1,4 @@
 import { test, expect, beforeEach, mock } from 'bun:test';
-import { env } from '../../utils/Config';
 import { StatsCommand } from '../../commands/Stats';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
@@ -12,8 +11,6 @@ let bot: ReturnType<typeof createMockBot>;
 beforeEach(() => {
   db = createMockDb();
   bot = createMockBot();
-
-  env.botCurrencyName = 'coins';
 });
 
 const createUserBets = (db: ReturnType<typeof createMockDb>, userBets: { cost: number; points: number }[]) =>

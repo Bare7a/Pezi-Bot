@@ -1,4 +1,4 @@
-import { test, expect, beforeEach, mock } from 'bun:test';
+import { test, expect, beforeEach, mock, beforeAll, afterAll } from 'bun:test';
 import { TriviaCron } from '../../crons/Trivia';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
@@ -9,6 +9,15 @@ import { createTestCommand } from '../utils/Command';
 
 let db: ReturnType<typeof createMockDb>;
 let bot: ReturnType<typeof createMockBot>;
+let originalRandom: typeof Math.random;
+
+beforeAll(() => {
+  originalRandom = Math.random;
+});
+
+afterAll(() => {
+  Math.random = originalRandom;
+});
 
 beforeEach(() => {
   db = createMockDb();

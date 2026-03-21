@@ -1,5 +1,4 @@
 import { test, expect, beforeEach, beforeAll, afterAll, mock } from 'bun:test';
-import { env } from '../../utils/Config';
 import { DiceCommand } from '../../commands/Dice';
 import { createMockDb } from '../utils/Db';
 import { createMockBot } from '../utils/Twitch';
@@ -12,8 +11,6 @@ let originalRandom: typeof Math.random;
 
 beforeAll(() => {
   originalRandom = Math.random;
-  env.botCurrencyName = 'coins';
-  Math.random = mock(() => 0.5);
 });
 
 afterAll(() => {
